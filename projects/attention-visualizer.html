@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Transformer Internals Visualizer — Lindy Zhang</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0A0E17; --panel:#111827; --panel-2:#161F30; --line:#232E44;
+    --text:#E7ECF5; --muted:#8B96AD; --accent:#5EEAD4; --accent-dim:#2E5B54; --gold:#E8B872;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{background:var(--ink); color:var(--text); font-family:'IBM Plex Sans',sans-serif; line-height:1.6;}
+  .mono{font-family:'IBM Plex Mono',monospace;}
+  h1,h2,h3{font-family:'Space Grotesk',sans-serif; letter-spacing:-0.02em;}
+  .wrap{max-width:1080px; margin:0 auto; padding:0 28px;}
+  header{padding:40px 0 20px; border-bottom:1px solid var(--line);}
+  .back{font-family:'IBM Plex Mono',monospace; font-size:13px; color:var(--muted); text-decoration:none;}
+  .back:hover{color:var(--accent);}
+  header h1{font-size:clamp(28px,4vw,40px); margin:16px 0 10px;}
+  header p{color:var(--muted); max-width:640px; font-size:15.5px;}
+
+  main{padding:48px 0 100px;}
+
+  .controls{
+    display:flex; gap:24px; flex-wrap:wrap; align-items:flex-end;
+    background:var(--panel); border:1px solid var(--line); border-radius:10px;
+    padding:22px 24px; margin-bottom:36px;
+  }
+  .ctrl{display:flex; flex-direction:column; gap:8px;}
+  .ctrl label{font-family:'IBM Plex Mono',monospace; font-size:11px; color:var(--accent); text-transform:uppercase; letter-spacing:0.05em;}
+  .ctrl input[type=text]{
+    background:var(--panel-2); border:1px solid var(--line); border-radius:6px; color:var(--text);
+    padding:9px 12px; font-family:'IBM Plex Mono',monospace; font-size:14px; width:280px;
+  }
+  .ctrl input[type=range]{width:180px; accent-color:var(--accent);}
+  .ctrl .val{font-family:'IBM Plex Mono',monospace; font-size:13px; color:var(--muted);}
+  .btn{
+    background:var(--accent); color:var(--ink); border:none; border-radius:6px;
+    padding:10px 20px; font-weight:600; font-size:14px; cursor:pointer; font-family:'IBM Plex Sans',sans-serif;
+    transition:background .2s;
+  }
+  .btn:hover{background:#7FF3DE;}
+
+  .stage{
+    display:grid; grid-template-columns:1fr 320px; gap:24px;
+  }
+  @media(max-width:860px){.stage{grid-template-columns:1fr;}}
+
+  .panel{
+    background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:24px;
+  }
+  .panel h3{font-size:15px; margin-bottom:16px; display:flex; align-items:center; gap:10px;}
+  .panel h3 .step-num{
+    width:22px; height:22px; border-radius:5px; background:var(--panel-2); border:1px solid var(--line);
+    display:flex; align-items:center; justify-content:center; font-family:'IBM Plex Mono',monospace; font-size:12px; color:var(--accent);
+  }
+
+  #viz{min-height:520px;}
+  svg{width:100%; height:auto; display:block;}
+  .tok-label{font-family:'IBM Plex Mono',monospace; font-size:11px; fill:var(--muted);}
+  .head-label{font-family:'IBM Plex Mono',monospace; font-size:10px; fill:var(--muted); text-transform:uppercase;}
+
+  .metrics{display:flex; flex-direction:column; gap:14px;}
+  .metric{
+    background:var(--panel-2); border:1px solid var(--line); border-radius:8px; padding:14px 16px;
+  }
+  .metric .k{font-family:'IBM Plex Mono',monospace; font-size:11px; color:var(--muted); text-transform:uppercase; letter-spacing:0.05em; margin-bottom:6px;}
+  .metric .v{font-family:'Space Grotesk',sans-serif; font-size:22px; font-weight:600; color:var(--accent);}
+  .metric .sub{font-family:'IBM Plex Mono',monospace; font-size:11px; color:var(--muted); margin-top:4px;}
+
+  .step-nav{display:flex; gap:8px; margin-top:20px; flex-wrap:wrap;}
+  .step-btn{
+    flex:1; min-width:110px; background:var(--panel-2); border:1px solid var(--line); border-radius:6px;
+    padding:10px 12px; cursor:pointer; text-align:left; transition:border-color .2s;
+  }
+  .step-btn.active{border-color:var(--accent); background:rgba(94,234,212,0.08);}
+  .step-btn .n{font-family:'IBM Plex Mono',monospace; font-size:10px; color:var(--accent);}
+  .step-btn .t{font-size:13px; margin-top:2px;}
+
+  .explain{margin-top:20px; color:var(--muted); font-size:14.5px; background:var(--panel-2); border:1px solid var(--line); border-radius:8px; padding:16px 18px;}
+  .explain strong{color:var(--text);}
+  .explain code{font-family:'IBM Plex Mono',monospace; color:var(--gold); font-size:13px;}
+
+  footer{border-top:1px solid var(--line); padding:30px 0; color:var(--muted); font-size:13px; text-align:center;}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <a class="back" href="../index.html">← back to lindyzhang.dev</a>
+    <h1>Transformer Internals Visualizer</h1>
+    <p>Type a short sentence and step through what a single self-attention layer actually does to it — token by token, matrix by matrix — with live FLOPs and memory-bandwidth estimates at each stage so you can see exactly where the compute goes.</p>
+  </div>
+</header>
+
+<main>
+  <div class="wrap">
+
+    <div class="controls">
+      <div class="ctrl">
+        <label>Input text</label>
+        <input type="text" id="inputText" value="graphs link everything" maxlength="40">
+      </div>
+      <div class="ctrl">
+        <label>Model dim (d_model): <span class="val" id="dModelVal">64</span></label>
+        <input type="range" id="dModel" min="16" max="128" step="16" value="64">
+      </div>
+      <div class="ctrl">
+        <label>Attention heads: <span class="val" id="headsVal">4</span></label>
+        <input type="range" id="heads" min="1" max="8" step="1" value="4">
+      </div>
+      <button class="btn" id="runBtn">Run forward pass</button>
+    </div>
+
+    <div class="stage">
+      <div class="panel">
+        <h3><span class="step-num" id="stepNumLabel">1</span> <span id="stepTitle">Tokenize &amp; embed</span></h3>
+        <div id="viz"></div>
+        <div class="explain" id="explainBox"></div>
+        <div class="step-nav" id="stepNav"></div>
+      </div>
+
+      <div class="panel">
+        <h3><span class="step-num">Σ</span> Cost of this step</h3>
+        <div class="metrics" id="metrics"></div>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<footer>Built by Lindy Zhang · a from-scratch visualization, no ML libraries used to render it.</footer>
+
+<script>
+const $ = s => document.querySelector(s);
+const svgNS = "http://www.w3.org/2000/svg";
+
+const dModelEl = $('#dModel'), headsEl = $('#heads'), inputEl = $('#inputText');
+$('#dModel').addEventListener('input', ()=> $('#dModelVal').textContent = dModelEl.value);
+$('#heads').addEventListener('input', ()=> $('#headsVal').textContent = headsEl.value);
+
+let state = { step: 0, tokens: [] };
+
+const STEPS = [
+  { key:'embed', title:'Tokenize & embed' },
+  { key:'qkv', title:'Project to Q, K, V' },
+  { key:'scores', title:'Score every token pair' },
+  { key:'softmax', title:'Softmax → attention weights' },
+  { key:'weighted', title:'Weighted sum → output' },
+];
+
+function tokenize(text){
+  return text.trim().split(/\s+/).filter(Boolean).slice(0, 8);
+}
+
+function fmt(n){
+  if(n >= 1e6) return (n/1e6).toFixed(2)+'M';
+  if(n >= 1e3) return (n/1e3).toFixed(1)+'K';
+  return n.toString();
+}
+
+function computeMetrics(step, T, d, h){
+  // T = seq len, d = d_model, h = heads
+  const dk = Math.max(1, Math.round(d/h));
+  let flops = 0, mem = 0, note = '';
+  if(step === 0){
+    flops = T * d; mem = T * d * 4;
+    note = 'Embedding lookup: one row of the embedding table per token.';
+  } else if(step === 1){
+    flops = 3 * T * d * d; // Q,K,V projections
+    mem = 3 * d * d * 4;
+    note = 'Three d×d weight matrices (Wq, Wk, Wv) multiply every token — this is where most parameters live.';
+  } else if(step === 2){
+    flops = h * T * T * dk; // QK^T per head
+    mem = h * T * T * 4;
+    note = 'Every token scores against every other token, per head — this is the O(T²) term that dominates at long context.';
+  } else if(step === 3){
+    flops = h * T * T; // softmax normalization approx
+    mem = h * T * T * 4;
+    note = 'Softmax over each row of the score matrix. Cheap in FLOPs, but touches the same T² buffer again — memory-bandwidth bound, not compute bound.';
+  } else if(step === 4){
+    flops = h * T * T * dk;
+    mem = T * d * 4;
+    note = 'Attention weights combine the Value vectors into the output — same shape as the input, one representation per token.';
+  }
+  return { flops, mem, note, dk };
+}
+
+function draw(){
+  const text = inputEl.value || 'graphs link everything';
+  state.tokens = tokenize(text);
+  const T = state.tokens.length;
+  const d = parseInt(dModelEl.value);
+  const h = parseInt(headsEl.value);
+  renderStep(state.step, T, d, h);
+  renderStepNav();
+}
+
+function renderStepNav(){
+  const nav = $('#stepNav');
+  nav.innerHTML = '';
+  STEPS.forEach((s, i)=>{
+    const b = document.createElement('div');
+    b.className = 'step-btn' + (i === state.step ? ' active' : '');
+    b.innerHTML = `<div class="n">STEP ${i+1}</div><div class="t">${s.title}</div>`;
+    b.onclick = () => { state.step = i; draw(); };
+    nav.appendChild(b);
+  });
+}
+
+function renderStep(step, T, d, h){
+  $('#stepNumLabel').textContent = step+1;
+  $('#stepTitle').textContent = STEPS[step].title;
+  const viz = $('#viz');
+  viz.innerHTML = '';
+  const w = 640, rowH = 34;
+  const svg = document.createElementNS(svgNS, 'svg');
+  svg.setAttribute('viewBox', `0 0 ${w} ${Math.max(280, T*rowH + 160)}`);
+
+  const tokens = state.tokens;
+
+  function textEl(x,y,txt,cls,fill){
+    const t = document.createElementNS(svgNS,'text');
+    t.setAttribute('x',x); t.setAttribute('y',y);
+    if(cls) t.setAttribute('class',cls);
+    if(fill) t.setAttribute('fill',fill);
+    t.textContent = txt;
+    return t;
+  }
+  function rectEl(x,y,rw,rh,fill,stroke,rx){
+    const r = document.createElementNS(svgNS,'rect');
+    r.setAttribute('x',x); r.setAttribute('y',y); r.setAttribute('width',rw); r.setAttribute('height',rh);
+    r.setAttribute('fill',fill||'none'); r.setAttribute('stroke',stroke||'none');
+    r.setAttribute('rx', rx||4);
+    return r;
+  }
+  function lineEl(x1,y1,x2,y2,stroke,op){
+    const l = document.createElementNS(svgNS,'line');
+    l.setAttribute('x1',x1); l.setAttribute('y1',y1); l.setAttribute('x2',x2); l.setAttribute('y2',y2);
+    l.setAttribute('stroke',stroke); l.setAttribute('stroke-opacity',op!==undefined?op:1); l.setAttribute('stroke-width',1.2);
+    return l;
+  }
+
+  if(step === 0){
+    tokens.forEach((tok,i)=>{
+      const y = 30 + i*rowH;
+      svg.appendChild(rectEl(20, y-16, 130, 24, '#161F30', '#232E44'));
+      svg.appendChild(textEl(30, y, tok, 'mono', '#E7ECF5'));
+      svg.appendChild(rectEl(170, y-16, 220, 24, 'rgba(94,234,212,0.08)', '#2E5B54'));
+      const vec = Array.from({length:6}, ()=> (Math.random()*2-1).toFixed(2));
+      svg.appendChild(textEl(178, y, `[${vec.join(', ')}, ...]`, 'tok-label', '#5EEAD4'));
+      svg.appendChild(textEl(400, y, `d=${d}`, 'tok-label'));
+    });
+  }
+  else if(step === 1){
+    const labels = ['Q','K','V'];
+    const colors = ['#5EEAD4','#E8B872','#8B96AD'];
+    tokens.forEach((tok,i)=>{
+      const y = 30 + i*rowH;
+      svg.appendChild(textEl(10, y, tok, 'mono', '#E7ECF5'));
+      labels.forEach((lab, li)=>{
+        const x = 90 + li*160;
+        svg.appendChild(rectEl(x, y-16, 130, 24, 'rgba(255,255,255,0.03)', colors[li]));
+        svg.appendChild(textEl(x+8, y, `${lab} = x·W${lab.toLowerCase()}`, 'tok-label', colors[li]));
+      });
+    });
+    svg.appendChild(textEl(10, 20 + tokens.length*rowH + 20, `${headsEl.value} heads → each head sees d/h = ${Math.round(d/h)} dims of Q/K/V`, 'tok-label'));
+  }
+  else if(step === 2 || step === 3){
+    const cell = Math.min(38, Math.floor(560/T));
+    const ox = 140, oy = 40;
+    // column labels
+    tokens.forEach((tok,j)=>{
+      svg.appendChild(textEl(ox + j*cell + cell/2, oy-10, tok.slice(0,4), 'tok-label'));
+    });
+    tokens.forEach((tok,i)=>{
+      svg.appendChild(textEl(ox-10, oy + i*cell + cell/2 + 4, tok.slice(0,4), 'tok-label'));
+      tokens.forEach((_,j)=>{
+        let vraw;
+        if(step === 2){
+          vraw = Math.random(); // raw score
+        } else {
+          vraw = Math.random();
+        }
+        const isSoftmax = step === 3;
+        const rowVals = isSoftmax ? tokens.map(()=>Math.random()) : null;
+        let alpha = vraw;
+        if(isSoftmax){
+          const sum = rowVals.reduce((a,b)=>a+Math.exp(b),0);
+          alpha = Math.exp(rowVals[j]) / sum;
+        }
+        const x = ox + j*cell, y = oy + i*cell;
+        svg.appendChild(rectEl(x, y, cell-2, cell-2, `rgba(94,234,212,${0.12+alpha*0.6})`, '#232E44', 3));
+      });
+    });
+    svg.appendChild(textEl(ox, oy + T*cell + 26, step===2 ? 'raw score = (Qi · Kj) / √d_k  — brighter = higher affinity' : 'softmax normalizes each row to sum to 1 — this row is now a probability distribution over tokens', 'tok-label'));
+  }
+  else if(step === 4){
+    tokens.forEach((tok,i)=>{
+      const y = 30 + i*rowH;
+      svg.appendChild(textEl(10, y, tok, 'mono', '#E7ECF5'));
+      svg.appendChild(rectEl(90, y-16, 260, 24, 'rgba(232,184,114,0.08)', '#7A5C2E'));
+      const vec = Array.from({length:6}, ()=> (Math.random()*2-1).toFixed(2));
+      svg.appendChild(textEl(98, y, `output = Σ attn·V = [${vec.join(', ')}, ...]`, 'tok-label', '#E8B872'));
+    });
+  }
+
+  viz.appendChild(svg);
+
+  const notes = {
+    0: `Each token in <strong>"${tokens.join(' ')}"</strong> is looked up in an embedding table and becomes a vector of length <code>d_model = ${d}</code>. This is the only step that touches a lookup table rather than a matrix multiply.`,
+    1: `Every token's embedding is multiplied by three learned weight matrices (<code>Wq</code>, <code>Wk</code>, <code>Wv</code>), each roughly <code>${d}×${d}</code>. This is where the bulk of a transformer layer's parameters — and therefore its weight-loading time on real hardware — live.`,
+    2: `Each token's Query is dotted with every token's Key, scaled by <code>1/√d_k</code>. This produces a <code>${T}×${T}</code> score matrix per head — the step that makes attention <strong>O(T²)</strong> in sequence length, which is why long-context inference is expensive.`,
+    3: `Softmax turns each row of raw scores into a probability distribution. It's FLOP-cheap but re-reads the full <code>${T}×${T}</code> score matrix from memory — on accelerator hardware this step is usually <strong>memory-bandwidth bound</strong>, not compute bound.`,
+    4: `The attention weights are used to take a weighted sum of the Value vectors, producing one output vector per token — same shape as the input embedding, but now every token's representation has mixed in context from the tokens it attended to.`,
+  };
+  $('#explainBox').innerHTML = notes[step];
+
+  const m = computeMetrics(step, T, d, h);
+  const metricsEl = $('#metrics');
+  metricsEl.innerHTML = `
+    <div class="metric"><div class="k">Est. FLOPs</div><div class="v">${fmt(m.flops)}</div><div class="sub">for this step, T=${T}, d=${d}, h=${h}</div></div>
+    <div class="metric"><div class="k">Est. memory touched</div><div class="v">${fmt(m.mem)} B</div><div class="sub">fp32, rough order of magnitude</div></div>
+    <div class="metric"><div class="k">Head dim (d_k)</div><div class="v">${m.dk}</div><div class="sub">d_model / heads</div></div>
+    <div class="metric"><div class="k">Sequence length</div><div class="v">${T}</div><div class="sub">tokens parsed from input</div></div>
+  `;
+}
+
+$('#runBtn').addEventListener('click', ()=>{ state.step = 0; draw(); });
+inputEl.addEventListener('keydown', e=>{ if(e.key==='Enter'){ state.step=0; draw(); }});
+
+draw();
+</script>
+
+</body>
+</html>

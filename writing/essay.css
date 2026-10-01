@@ -1,0 +1,115 @@
+:root{
+  --bg:#F3F1E4; --bg-2:#E8E7D2; --white:#FBFAF1; --ink:#2F3522; --muted:#7A7C64;
+  --sage:#9DB46A; --sage-dark:#5E7A2E; --clay:#A26B45; --line:#DCDDC2;
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --bg:#1B1D16; --bg-2:#272A20; --white:#22251C; --ink:#ECEADB; --muted:#A4A68F;
+    --sage:#7F9650; --sage-dark:#AFC685; --clay:#CF9C78; --line:#363A2C;
+  }
+}
+*{box-sizing:border-box; margin:0; padding:0;}
+body{
+  background:var(--bg); color:var(--ink);
+  font-family:'Newsreader', Georgia, serif; font-size:19.5px; line-height:1.75;
+  -webkit-font-smoothing:antialiased;
+}
+body::before{
+  content:""; position:fixed; inset:0; z-index:100; pointer-events:none; opacity:.07;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+@media (prefers-color-scheme: dark){ body::before{filter:invert(1); opacity:.05;} }
+a{color:inherit;}
+::selection{background:var(--clay); color:var(--bg);}
+
+/* reading progress */
+.progress{position:fixed; top:0; left:0; height:2px; width:0; background:var(--clay); z-index:70;}
+
+/* top bar */
+.topbar{
+  max-width:920px; margin:0 auto; padding:26px 28px;
+  display:flex; justify-content:space-between; align-items:center;
+  font-family:'Karla', sans-serif; font-size:13px; color:var(--muted);
+}
+.topbar a{text-decoration:none; transition:color .2s;}
+.topbar a:hover{color:var(--sage-dark);}
+.topbar .brand{font-family:'Cormorant Garamond', serif; font-size:19px; color:var(--ink);}
+
+/* header */
+.essay-head{max-width:720px; margin:64px auto 0; padding:0 28px; text-align:center;}
+.essay-head .kicker{font-family:'Karla', sans-serif; font-size:12px; letter-spacing:.08em; color:var(--sage-dark); margin-bottom:18px;}
+.essay-head h1{font-family:'Cormorant Garamond', serif; font-weight:500; font-size:clamp(40px,7vw,64px); line-height:1.1; margin-bottom:18px;}
+.essay-head .dek{font-family:'Cormorant Garamond', serif; font-style:italic; font-size:22px; line-height:1.45; color:var(--muted); max-width:560px; margin:0 auto 22px;}
+.essay-head .meta{font-family:'Karla', sans-serif; font-size:13px; color:var(--muted);}
+.essay-head .sprig{width:28px; height:28px; color:var(--sage-dark); margin:38px auto 46px; display:block; opacity:.85;}
+
+/* body */
+.essay{max-width:640px; margin:0 auto; padding:0 28px 30px;}
+.essay p{margin-bottom:1.3em; text-wrap:pretty;}
+.essay > p:first-of-type::first-letter{
+  float:left; font-family:'Cormorant Garamond', serif; font-weight:500;
+  font-size:4.7em; line-height:.78; padding:8px 12px 0 0; color:var(--clay);
+}
+.essay > p:last-of-type::after{
+  content:""; display:inline-block; width:8px; height:8px; margin-left:10px;
+  background:var(--clay); transform:rotate(45deg) translateY(-2px);
+}
+.essay em{font-style:italic;}
+.break{text-align:center; color:var(--clay); font-size:20px; letter-spacing:.5em; margin:2.2em 0;}
+
+/* pull quote: in the column on small screens, out in the margin on wide ones */
+.pull{
+  font-family:'Cormorant Garamond', serif; font-style:italic; font-size:26px; line-height:1.35;
+  color:var(--sage-dark); text-align:center;
+  border-top:1px solid var(--line); border-bottom:1px solid var(--line);
+  padding:20px 0; margin:1.8em 0;
+}
+@media(min-width:1100px){
+  .pull{float:right; width:280px; margin:.3em -210px 1.2em 36px; text-align:left; font-size:24px;}
+}
+
+/* more writing */
+.more{max-width:640px; margin:40px auto 0; padding:40px 28px 0; border-top:1px solid var(--line);}
+.more h2{font-family:'Cormorant Garamond', serif; font-weight:500; font-size:28px; margin-bottom:18px;}
+.more a{display:block; text-decoration:none; padding:16px 0; border-bottom:1px solid var(--line);}
+.more a:first-of-type{border-top:1px solid var(--line);}
+.more a h3{font-family:'Cormorant Garamond', serif; font-weight:500; font-size:23px; transition:color .2s;}
+.more a:hover h3{color:var(--sage-dark);}
+.more a p{font-family:'Karla', sans-serif; font-size:14px; color:var(--muted);}
+
+footer{max-width:640px; margin:60px auto 0; padding:0 28px 50px; font-family:'Karla', sans-serif; font-size:12.5px; color:var(--muted); display:flex; justify-content:space-between; flex-wrap:wrap; gap:8px;}
+footer a{text-decoration:none;}
+footer a:hover{color:var(--sage-dark);}
+
+@media(max-width:600px){ body{font-size:18px;} .essay-head{margin-top:40px;} }
+
+/* section labels inside an essay */
+.essay h2.part{
+  font-family:'Karla', sans-serif; font-weight:500; font-size:12px;
+  letter-spacing:.22em; text-transform:uppercase; color:var(--clay);
+  text-align:center; margin:2.8em 0 1.6em;
+}
+
+/* works cited */
+.works-cited{
+  max-width:640px; margin:10px auto 0; padding:30px 28px 0; border-top:1px solid var(--line);
+  font-family:'Karla', sans-serif; font-size:13.5px; line-height:1.6; color:var(--muted);
+}
+.works-cited h2{font-family:'Cormorant Garamond', serif; font-weight:500; font-size:22px; color:var(--ink); margin-bottom:14px;}
+.works-cited p{padding-left:2em; text-indent:-2em; margin-bottom:10px; overflow-wrap:anywhere;}
+.works-cited a{color:var(--sage-dark); text-decoration:none;}
+
+/* poems: no drop cap, tighter stanzas */
+.essay.poem > p:first-of-type::first-letter{
+  float:none; font-size:inherit; line-height:inherit; padding:0;
+  font-family:inherit; color:inherit;
+}
+.essay.poem p{margin-bottom:1.1em;}
+.essay.poem .flash{margin-bottom:.35em;}
+
+/* photo under the essay header */
+.essay-photo{max-width:640px; margin:0 auto 46px; padding:0 28px;}
+.essay-photo img{
+  width:100%; display:block; border-radius:6px 60px 6px 6px;
+  box-shadow:0 24px 48px -22px rgba(0,0,0,.28);
+}

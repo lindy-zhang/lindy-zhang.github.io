@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Lindy Zhang</title>
 <meta name="description" content="Lindy Zhang, CS and math at MIT. Research, projects, and personal essays.">
+<meta name="theme-color" content="#0a1020">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 
@@ -16,588 +17,744 @@
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Karla:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300..500;1,6..72,300..500&family=IBM+Plex+Mono:wght@400&display=swap" rel="stylesheet">
+
 <style>
-    :root{
-    --bg:#F3F1E4;
-    --bg-2:#E8E7D2;
-    --white:#FBFAF1;
-    --ink:#2F3522;
-    --muted:#7A7C64;
-    --sage:#9DB46A;
-    --sage-dark:#5E7A2E;
-    --clay:#A26B45;
-    --line:#DCDDC2;
-    --nav-bg:rgba(243,241,228,0.9);
-    --shadow:rgba(47,53,34,0.28);
-    --polaroid:#FFFEF8;
-    --polaroid-ink:#3A3F2C;
-    --max:920px;
-    --squiggle:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 8' preserveAspectRatio='none'%3E%3Cpath d='M1 4.5C15 2 25 6.5 40 4S65 2 78 5 95 3 99 4' fill='none' stroke='black' stroke-width='1.6' stroke-linecap='round' vector-effect='non-scaling-stroke'/%3E%3C/svg%3E");
-    --squiggle-bold:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 8' preserveAspectRatio='none'%3E%3Cpath d='M1 4.5C15 2 25 6.5 40 4S65 2 78 5 95 3 99 4' fill='none' stroke='black' stroke-width='2.6' stroke-linecap='round' vector-effect='non-scaling-stroke'/%3E%3C/svg%3E");
-  }
-    body::before{
-    content:""; position:fixed; inset:0; z-index:100; pointer-events:none;
-    opacity:.07;
-    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-  }
-  @media (prefers-color-scheme: dark){ body::before{filter:invert(1); opacity:.10;} }
-  @media (prefers-color-scheme: dark){
-    :root{
-      --bg:#1B1D16;
-      --bg-2:#272A20;
-      --white:#22251C;
-      --ink:#ECEADB;
-      --muted:#A4A68F;
-      --sage:#7F9650;
-      --sage-dark:#AFC685;
-      --clay:#CF9C78;
-      --line:#363A2C;
-      --nav-bg:rgba(27,29,22,0.88);
-      --shadow:rgba(0,0,0,0.55);
-      --polaroid:#E6E2D0;
-      --polaroid-ink:#33382A;
-    }
+  /* =========================================================
+     COLORS
+     The sky changes with the real time of day in Cambridge, so
+     the text color is set by the script at the bottom of the page.
+     --ink is written as "r, g, b" so it can be used with any opacity.
+     ========================================================= */
+  :root{
+    --ink: 240, 236, 226;
+    --text: rgba(var(--ink), .94);
+    --muted: rgba(var(--ink), .60);
+    --faint: rgba(var(--ink), .22);
+    --serif: 'Newsreader', Georgia, serif;
+    --mono: 'IBM Plex Mono', ui-monospace, monospace;
+    --ease: cubic-bezier(.22,.8,.24,1);
   }
   *{box-sizing:border-box; margin:0; padding:0;}
-  html{scroll-behavior:smooth;}
+  html{background:#0a1020;}
   body{
-    background:var(--bg);
-    color:var(--ink);
-    font-family:'Karla', sans-serif;
-    font-weight:400;
-    line-height:1.7;
-    -webkit-font-smoothing:antialiased;
+    font-family:var(--serif); font-weight:350; font-size:15.5px; line-height:1.62;
+    color:var(--text); -webkit-font-smoothing:antialiased;
+    min-height:100vh; transition:color 1.2s ease;
+    font-optical-sizing:auto;
   }
-  a{color:inherit;}
-  img{max-width:100%; display:block;}
-  .wrap{max-width:var(--max); margin:0 auto; padding:0 28px;}
-  .serif{font-family:'Cormorant Garamond', serif;}
-  .fade{opacity:0; transform:translateY(14px); transition:opacity .8s ease, transform .8s ease;}
-  .fade.in{opacity:1; transform:translateY(0);}
+  a{color:inherit; text-decoration:none;}
+  button{font:inherit; color:inherit; background:none; border:0; cursor:pointer; text-align:left;}
+  ::selection{background:rgba(var(--ink), .9); color:#111;}
 
-  /* sprig mark, reused as a quiet section divider */
-  .sprig{width:26px; height:26px; color:var(--sage-dark); opacity:0.85;}
+  /* the live sky sits behind everything */
+  #sky{position:fixed; inset:0; width:100%; height:100%; z-index:0; display:block;}
 
-  /* NAV */
-  nav{
-    position:fixed; top:0; left:0; right:0; z-index:60;
-    background:var(--nav-bg); backdrop-filter:blur(8px);
-    border-bottom:1px solid var(--line);
+  /* =========================================================
+     LAYOUT: one quiet column on the left
+     ========================================================= */
+  main{
+    position:relative; z-index:2;
+    width:min(460px, 100% - 48px);
+    margin-left:clamp(24px, 9vw, 150px);
+    padding:clamp(72px, 15vh, 150px) 0 34vh;
   }
-  nav .wrap{display:flex; align-items:center; justify-content:space-between; height:64px;}
-  .brand{font-family:'Cormorant Garamond',serif; font-weight:500; font-size:19px; letter-spacing:0.02em;}
-  .navlinks{display:flex; gap:28px;}
-  .navlinks a{font-size:13px; text-decoration:none; color:var(--muted); letter-spacing:0.03em; transition:color .2s;}
-  .navlinks a:hover{color:var(--sage-dark);}
-  @media(max-width:640px){.navlinks{gap:16px; font-size:12px;}}
+  section{margin-top:44px;}
+  .label{
+    font-family:var(--mono); font-size:10.5px; letter-spacing:.06em;
+    color:var(--muted); margin-bottom:10px; display:flex; align-items:center; gap:10px;
+  }
+  .label::after{content:""; height:1px; flex:1; background:var(--faint); transform-origin:left; transform:scaleX(0); transition:transform 1.4s var(--ease) .2s;}
+  .label.in::after{transform:scaleX(1);}
 
-  /* HERO */
-  .hero{padding:150px 0 90px;}
-  .hero-grid{display:grid; grid-template-columns:1fr 0.85fr; gap:56px; align-items:center;}
-  @media(max-width:800px){.hero-grid{grid-template-columns:1fr;}}
-  .eyebrow{
-    font-size:13px; color:var(--sage-dark); letter-spacing:0.04em; margin-bottom:16px;
-    display:flex; align-items:center; gap:8px;
-  }
-  .hero h1{
-    font-family:'Cormorant Garamond', serif; font-weight:500; font-size:clamp(40px, 6vw, 62px);
-    line-height:1.15; margin-bottom:20px; letter-spacing:0.01em;
-  }
-  .hero h1 em{font-style:italic; color:var(--sage-dark); font-weight:500;}
-  .hero p.lede{font-size:17px; color:var(--muted); max-width:440px; margin-bottom:30px;}
-    .cta-row{display:flex; gap:14px 38px; flex-wrap:wrap; align-items:center;}
-  .cta-row .cta + .cta::before{
-    content:"·"; position:absolute; left:-23px; top:-1px;
-    color:var(--clay); font-size:18px; line-height:1;
-    pointer-events:none;
-  }
-    .cta{position:relative; font-size:14px; text-decoration:none; padding-bottom:7px; color:var(--ink); transition:color .2s;}
-  .cta::after{
-    content:""; position:absolute; left:-2px; right:-2px; bottom:0; height:7px;
-    background:var(--clay);
-    -webkit-mask:var(--squiggle) no-repeat center / 100% 100%; mask:var(--squiggle) no-repeat center / 100% 100%;
-    transition:transform .3s ease;
-  }
-  .cta:hover{color:var(--sage-dark);}
-  .cta:hover::after{transform:translateY(1px) scaleX(1.05);}
-  .scribble{position:relative; white-space:nowrap;}
-  .scribble::after{
-    content:""; position:absolute; left:-4%; right:-4%; bottom:-4px; height:12px;
-    background:var(--clay); opacity:.85;
-    -webkit-mask:var(--squiggle-bold) no-repeat center / 100% 100%; mask:var(--squiggle-bold) no-repeat center / 100% 100%;
-  }
-  .hero-photo{
-    border-radius:6px 60px 6px 6px; overflow:hidden; aspect-ratio:4/5;
-    box-shadow:0 24px 48px -20px var(--shadow);
-  }
-  .hero-photo img{width:100%; height:100%; object-fit:cover;}
+  h1{font-weight:400; font-size:23px; letter-spacing:-.005em; line-height:1.2; margin-bottom:14px;}
+  h1 em{font-style:italic;}
+  .intro p{margin-bottom:12px; color:var(--text);}
+  .intro p.quiet{color:var(--muted);}
 
-  section{padding:86px 0;}
-  .section-head{margin-bottom:44px; display:flex; align-items:center; gap:12px;}
-  .section-head h2{font-family:'Cormorant Garamond',serif; font-weight:500; font-size:clamp(28px,4vw,36px);}
-  .divider{border:none; border-top:1px solid var(--line); margin:0 0 86px;}
+  /* inline words that reveal a photo on hover */
+  .peek{
+    cursor:default; white-space:nowrap;
+    background-image:linear-gradient(to right, var(--muted) 50%, transparent 50%);
+    background-size:4px 1px; background-repeat:repeat-x; background-position:0 92%;
+    transition:color .3s;
+  }
+  .peek:hover{color:rgba(var(--ink),1);}
 
-  /* ABOUT */
-  .about-grid{display:grid; grid-template-columns:1.2fr 0.8fr; gap:56px; align-items:start;}
-  @media(max-width:800px){.about-grid{grid-template-columns:1fr;}}
-  .about-text p{color:var(--ink); font-size:16.5px; margin-bottom:18px; max-width:480px;}
-  .about-text em{font-style:italic; color:var(--sage-dark);}
-  .about-photo{border-radius:60px 6px 60px 6px; overflow:hidden; aspect-ratio:3/4;}
-  .about-photo img{width:100%; height:100%; object-fit:cover;}
+  .links{display:flex; flex-wrap:wrap; gap:4px 18px; margin-top:16px; font-size:14.5px;}
+  .links a{position:relative; color:var(--muted); transition:color .25s;}
+  .links a::after{
+    content:""; position:absolute; left:0; right:0; bottom:1px; height:1px;
+    background:currentColor; transform:scaleX(0); transform-origin:right; transition:transform .35s var(--ease);
+  }
+  .links a:hover{color:var(--text);}
+  .links a:hover::after{transform:scaleX(1); transform-origin:left;}
 
-  /* WRITING */
-  .write-list{display:flex; flex-direction:column;}
-  .write-entry{
-    padding:26px 0; border-bottom:1px solid var(--line);
-    display:flex; justify-content:space-between; align-items:flex-start; gap:24px; flex-wrap:wrap;
-    text-decoration:none; color:var(--ink);
+  /* =========================================================
+     ROWS: used for work, projects and writing.
+     .row-head is the one-line title; .row-body is the hidden part
+     that opens when you click (only on rows with a body).
+     ========================================================= */
+  .row{border-radius:4px;}
+  .row-head{
+    width:100%; display:flex; align-items:baseline; gap:10px;
+    padding:3px 0; transition:padding .35s var(--ease);
   }
-  .write-entry:first-child{border-top:1px solid var(--line);}
-  .write-entry:hover h4{color:var(--sage-dark);}
-  .write-entry .write-main{max-width:520px;}
-  .write-entry h4{font-family:'Cormorant Garamond',serif; font-weight:500; font-size:23px; margin-bottom:6px; transition:color .2s;}
-  .write-entry p{font-size:14.5px; color:var(--muted);}
-  .write-entry .write-meta{font-size:12.5px; color:var(--muted); white-space:nowrap; padding-top:6px;}
-  .write-intro{font-family:'Cormorant Garamond',serif; font-style:italic; font-size:20px; color:var(--muted); max-width:520px; margin-bottom:34px;}
-  .write-feature{
-    display:block; text-decoration:none; color:var(--ink);
-    background:var(--white); border:1px solid var(--line); border-radius:14px;
-    padding:38px 40px; margin-bottom:34px; transition:box-shadow .2s, transform .2s;
+  .row-head .t{transition:transform .35s var(--ease);}
+  .row-head .sub{color:var(--muted); font-style:italic; font-size:14.5px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; min-width:0;}
+  .row-head .y{
+    margin-left:auto; flex-shrink:0; font-family:var(--mono); font-size:10.5px; color:var(--muted);
+    letter-spacing:.03em; padding-left:12px;
   }
-  .write-feature:hover{box-shadow:0 18px 34px -22px var(--shadow); transform:translateY(-2px);}
-  .write-feature .kicker{font-size:12px; color:var(--sage-dark); letter-spacing:0.04em; margin-bottom:14px;}
-  .write-feature h3{font-family:'Cormorant Garamond',serif; font-weight:500; font-size:clamp(28px,4vw,36px); line-height:1.2; margin-bottom:18px;}
-  .write-feature blockquote{
-    font-family:'Cormorant Garamond',serif; font-style:italic; font-size:21px; line-height:1.5;
-    border-left:2px solid var(--clay); padding-left:20px; margin-bottom:18px; max-width:560px;
+  .row-head .mark{
+    display:inline-block; width:10px; flex-shrink:0; color:var(--muted); font-family:var(--mono); font-size:11px;
+    transition:transform .35s var(--ease), color .25s; transform-origin:50% 55%;
   }
-  .write-feature p{font-size:15px; color:var(--muted); max-width:520px; margin-bottom:14px;}
-  .write-feature .go{font-size:13.5px; color:var(--sage-dark);}
-  @media(max-width:600px){.write-feature{padding:28px 24px;}}
+  .row-head:hover .t, .row.open .row-head .t{transform:translateX(3px);}
+  .row-head:hover .mark{color:var(--text);}
+  .row.open .mark{transform:rotate(45deg);}
+  a.row-head:hover .mark{transform:translate(2px,-2px);}
 
-     /* NOTES (polaroids) */
-  .notes{display:flex; flex-direction:column;}
-  .note{
-    display:grid; grid-template-columns:180px 1fr; gap:36px; align-items:center;
-    padding:30px 0; border-bottom:1px solid var(--line);
+  .row-body{display:grid; grid-template-rows:0fr; transition:grid-template-rows .55s var(--ease);}
+  .row.open .row-body{grid-template-rows:1fr;}
+  .row-body > div{overflow:hidden; min-height:0;}
+  .row-body .inner{
+    padding:4px 0 12px 20px; color:var(--muted); font-size:14.5px;
+    opacity:0; transform:translateY(-4px); transition:opacity .4s ease, transform .5s var(--ease);
   }
-  .note:first-child{border-top:1px solid var(--line);}
-  .polaroid{
-    width:160px; margin:0 auto; background:var(--polaroid); padding:9px 9px 0;
-    box-shadow:0 10px 22px -12px var(--shadow);
-    transform:rotate(-2.5deg); transition:transform .3s ease;
+  .row.open .row-body .inner{opacity:1; transform:none; transition-delay:.12s;}
+  .row-body p + p{margin-top:8px;}
+  .row-body a{border-bottom:1px solid var(--faint); color:var(--text); transition:border-color .25s;}
+  .row-body a:hover{border-color:var(--text);}
+  .row-body .meta{font-family:var(--mono); font-size:10.5px; letter-spacing:.03em; margin-bottom:6px;}
+
+  .skills{margin-top:12px; color:var(--muted); font-size:13.5px;}
+
+  footer{margin-top:56px; font-family:var(--mono); font-size:10.5px; color:var(--muted); letter-spacing:.03em;}
+
+  /* =========================================================
+     FIXED CORNERS: a caption for the sky on the left,
+     the Cambridge clock and controls on the right
+     ========================================================= */
+  .corner{
+    position:fixed; z-index:3; bottom:22px;
+    font-family:var(--mono); font-size:10.5px; letter-spacing:.03em; color:var(--muted);
   }
-  .note:nth-child(even) .polaroid{transform:rotate(2deg);}
-  .note:hover .polaroid{transform:rotate(0) scale(1.04);}
-  .polaroid img{width:100%; aspect-ratio:1/1; object-fit:cover;}
-  .polaroid figcaption{
-    font-family:'Caveat',cursive; font-size:17px; line-height:1.2; color:var(--polaroid-ink);
-    text-align:center; padding:6px 2px 9px;
+  .corner.l{right:28px; bottom:46px; max-width:330px; text-wrap:balance; line-height:1.55; text-align:right; transition:opacity .6s;}
+  .corner.l.hide{opacity:0;}
+  .corner.r{right:28px; display:flex; gap:18px; align-items:center;}
+  .corner button{color:var(--muted); transition:color .25s; font-family:var(--mono); font-size:10.5px;}
+  .corner button:hover{color:var(--text);}
+  @media (max-width:760px){
+    .corner.l{display:none;}
+    .corner.r{left:14px; right:14px; justify-content:space-between; bottom:12px; padding:8px 12px;
+              border-radius:999px; background:rgba(var(--ink), .07); backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px);}
+    main{padding-bottom:22vh;}
   }
-  .note h4{
-    font-family:'Cormorant Garamond',serif; font-weight:500; font-size:22px; margin-bottom:4px;
-    display:flex; align-items:center; gap:8px;
-  }
-  .doodle{width:22px; height:22px; color:var(--clay); flex-shrink:0;}
-  .note p{font-size:14.5px; color:var(--muted); max-width:460px;}
-  .note a.gentle-link{color:var(--sage-dark); text-decoration:none; border-bottom:1px solid var(--sage); font-size:13px;}
-  @media(max-width:600px){
-    .note{grid-template-columns:110px 1fr; gap:20px;}
-    .polaroid{width:104px; padding:6px 6px 0;}
-    .polaroid figcaption{font-size:14px; padding:4px 2px 6px;}
+  @media (max-width:560px){
+    .row-head .sub{display:none;}
   }
 
-  /* WORK (experience) */
-  .work-list{display:flex; flex-direction:column;}
-  .work-item{padding:30px 0; border-bottom:1px solid var(--line); display:grid; grid-template-columns:170px 1fr; gap:28px;}
-  .work-item:first-child{border-top:1px solid var(--line);}
-  @media(max-width:700px){.work-item{grid-template-columns:1fr; gap:8px;}}
-  .work-item .when{font-size:13px; color:var(--muted); padding-top:2px;}
-  .work-item h3{font-family:'Cormorant Garamond',serif; font-weight:500; font-size:24px; margin-bottom:4px;}
-  .work-item .role{font-size:14px; color:var(--sage-dark); margin-bottom:12px; font-style:italic;}
-  .work-item ul{padding-left:18px; color:var(--muted); font-size:15px;}
-  .work-item li{margin-bottom:8px;}
-  .work-item li::marker{color:var(--clay);}
-  .work-photos{display:flex; gap:10px; margin-top:16px; flex-wrap:wrap;}
-  .work-photos img{width:200px; height:200px; object-fit:cover; border-radius:6px;}
 
-  /* PROJECTS */
-  .proj-grid{display:grid; grid-template-columns:repeat(2,1fr); gap:20px;}
-  @media(max-width:760px){.proj-grid{grid-template-columns:1fr;}}
-  .proj-card{
-    background:var(--white); border:1px solid var(--line); border-radius:14px;
-    padding:26px; text-decoration:none; color:var(--ink);
-    display:flex; flex-direction:column; transition:box-shadow .2s, transform .2s;
+  /* =========================================================
+     MUSIC: a small "on repeat" player in the top right corner.
+     It plays through Spotify's official embed, which opens
+     underneath when you press play.
+     ========================================================= */
+  .music{
+    position:fixed; z-index:3; top:20px; right:28px; width:300px;
+    opacity:0; transform:translateY(-6px); transition:opacity 1s ease .9s, transform 1s var(--ease) .9s;
   }
-  .proj-card:hover{box-shadow:0 18px 34px -22px var(--shadow); transform:translateY(-2px);}
-  .proj-card .tag{font-size:12px; color:var(--sage-dark); letter-spacing:0.03em; margin-bottom:12px;}
-  .proj-card h3{font-family:'Cormorant Garamond',serif; font-weight:500; font-size:22px; margin-bottom:8px;}
-  .proj-card p{font-size:14px; color:var(--muted); margin-bottom:16px; flex-grow:1;}
-  .proj-card .stack{display:flex; gap:8px; flex-wrap:wrap; margin-bottom:14px;}
-  .proj-card .stack span{font-size:11.5px; color:var(--muted); background:var(--bg-2); padding:3px 10px; border-radius:20px;}
-  .proj-card .go{font-size:13.5px; color:var(--sage-dark);}
-  .proj-card.dim{opacity:0.6;}
-  .proj-card.dim:hover{transform:none; box-shadow:none;}
-
-  /* SKILLS */
-  .skills-line{color:var(--muted); font-size:15px; line-height:2;}
-  .skills-line strong{color:var(--ink); font-weight:600;}
-
-  /* RESUME */
-  .resume-card{
-    display:flex; justify-content:space-between; align-items:center; gap:24px; flex-wrap:wrap;
-    background:var(--white); border:1px solid var(--line); border-radius:14px;
-    padding:30px 34px;
+  .music.ready{opacity:1; transform:none;}
+  .m-row{display:flex; align-items:center; gap:10px;}
+  .m-play{width:30px; height:30px; flex-shrink:0; border-radius:50%; display:grid; place-items:center;
+          border:1px solid var(--faint); color:var(--text); transition:border-color .25s, transform .25s var(--ease);}
+  .m-play:hover{border-color:var(--muted); transform:scale(1.06);}
+  .m-play svg{width:11px; height:11px;}
+  .music.playing .m-play svg.play, .music:not(.playing) .m-play svg.pause{display:none;}
+  .m-text{display:flex; flex-direction:column; min-width:0; flex:1; font-size:13px; line-height:1.25;}
+  .m-label{font-family:var(--mono); font-size:9.5px; letter-spacing:.04em; color:var(--muted); margin-bottom:2px;}
+  .m-title{color:var(--text); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; transition:opacity .3s;}
+  .m-artist{color:var(--muted); font-style:italic; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; transition:opacity .3s;}
+  .m-text.swap .m-title, .m-text.swap .m-artist{opacity:0;}
+  .m-skip{color:var(--muted); font-family:var(--mono); font-size:13px; padding:4px 3px; transition:color .2s;}
+  .m-skip:hover{color:var(--text);}
+  .m-eq{display:flex; gap:2px; align-items:flex-end; height:10px; flex-shrink:0; opacity:0; transition:opacity .4s;}
+  .m-eq i{width:2px; height:3px; background:var(--muted); border-radius:1px;}
+  .music.playing .m-eq{opacity:1;}
+  .music.playing .m-eq i{animation:eq 1s ease-in-out infinite;}
+  .music.playing .m-eq i:nth-child(2){animation-delay:-.35s; animation-duration:.8s;}
+  .music.playing .m-eq i:nth-child(3){animation-delay:-.7s; animation-duration:1.15s;}
+  @keyframes eq{0%,100%{height:3px} 50%{height:10px}}
+  .m-embed{display:grid; grid-template-rows:0fr; transition:grid-template-rows .6s var(--ease);}
+  .music.open .m-embed{grid-template-rows:1fr;}
+  .m-embed > div{overflow:hidden; min-height:0;}
+  .m-embed .frame{margin-top:10px; border-radius:12px; overflow:hidden; height:80px;
+                  box-shadow:0 14px 34px -18px rgba(0,0,0,.6);}
+  .m-embed iframe{display:block; border:0;}
+  @media (max-width:760px){
+    .music{top:14px; right:14px; left:14px; width:auto;}
+    main{padding-top:180px;}
   }
-  .resume-card h3{font-family:'Cormorant Garamond',serif; font-weight:500; font-size:26px; margin-bottom:4px;}
-  .resume-card p{font-size:14.5px; color:var(--muted);}
-  @media(max-width:600px){.resume-card{padding:24px;}}
 
-  /* FOOTER */
-  footer{padding:80px 0 50px; border-top:1px solid var(--line);}
-  footer h2{font-family:'Cormorant Garamond',serif; font-weight:500; font-size:clamp(30px,5vw,44px); margin-bottom:26px; max-width:520px;}
-  .foot-links{display:flex; gap:26px; flex-wrap:wrap; font-size:14px; margin-bottom:50px;}
-  .foot-links a{text-decoration:none; border-bottom:1px solid var(--line); padding-bottom:2px;}
-  .foot-links a:hover{border-color:var(--sage-dark); color:var(--sage-dark);}
-  .foot-bottom{color:var(--muted); font-size:12.5px; display:flex; justify-content:space-between; flex-wrap:wrap; gap:8px;}
+  /* floating photo for .peek words */
+  #photo{
+    position:fixed; z-index:4; left:0; top:0; width:190px; pointer-events:none;
+    opacity:0; transform:translate3d(-999px,0,0); transition:opacity .35s ease;
+    box-shadow:0 22px 50px -18px rgba(0,0,0,.55);
+  }
+  #photo.show{opacity:1;}
+  #photo img{display:block; width:100%; height:auto; border-radius:3px;}
 
-  ::selection{background:var(--clay); color:var(--bg);}
-  @media (prefers-reduced-motion: reduce){ *{animation:none !important; transition:none !important;} .fade{opacity:1 !important; transform:none !important;} }
+  /* entrance: lines rise in one after another */
+  .rise{opacity:0; transform:translateY(10px); filter:blur(5px);
+        transition:opacity .9s ease, transform 1s var(--ease), filter 1s ease;}
+  .rise.in{opacity:1; transform:none; filter:none;}
+
+  .sr{position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0);}
+
+  @media (prefers-reduced-motion: reduce){
+    *{transition:none !important;}
+    .rise{opacity:1; transform:none; filter:none;}
+  }
 </style>
 </head>
 <body>
 
-<nav>
-  <div class="wrap">
-    <div class="brand">lindy zhang</div>
-    <div class="navlinks">
-      <a href="#about">about</a>
-      <a href="#writing">writing</a>
-      <a href="#notes">notes</a>
-      <a href="#work">work</a>
-      <a href="#projects">projects</a>
-      <a href="resume.pdf" target="_blank" rel="noopener">resume</a>
-      <a href="#contact">contact</a>
-    </div>
-  </div>
-</nav>
+<canvas id="sky" aria-hidden="true"></canvas>
+<div id="photo" aria-hidden="true"><img alt=""></div>
 
-<section class="hero">
-  <div class="wrap">
-    <div class="hero-grid">
-      <div class="fade">
-        <div class="eyebrow">
-          <svg class="sprig" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M12 21V6M12 6c0-2.5 2-4.5 5-4.5-.5 3-2.5 5-5 4.5ZM12 10c0-2.5-2-4-4.5-4C8 8.5 10 10.5 12 10Z"/></svg>
-          <span>cs + math @ MIT</span>
-        </div>
-<h1>hi, i'm <span class="scribble">lindy</span>!</h1>
-        <p class="lede">cs + math at MIT. i just spent the summer building AI tools for a bank in Taipei, and i'm currently doing research at CSAIL. off the clock, i'm usually running by the Charles River, at a cute cafe, or on a tennis court!</p>
-        <div class="cta-row">
-          <a class="cta" href="#work">see what i've been working on</a>
-          <a class="cta" href="#writing">read my writing</a>
-          <a class="cta" href="https://github.com/lindy-zhang" target="_blank" rel="noopener">github</a>
-        </div>
-      </div>
-      <div class="hero-photo fade">
-        <img src="assets/travel-kimono3.jpg" alt="Lindy at a temple archway" fetchpriority="high">
-      </div>
-    </div>
-  </div>
-</section>
+<main>
 
-<section id="about">
-  <div class="wrap">
-    <div class="section-head fade">
-      <svg class="sprig" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M12 21V6M12 6c0-2.5 2-4.5 5-4.5-.5 3-2.5 5-5 4.5ZM12 10c0-2.5-2-4-4.5-4C8 8.5 10 10.5 12 10Z"/></svg>
-      <h2>about</h2>
-    </div>
-    <div class="about-grid fade">
-      <div class="about-text">
-        <p>i'm a student studying Computer Science and Mathematics at MIT (6-4 + 18).</p>
-        <p>so far, in terms of research, i've been exploring when we can trust what an LLM says, whether that's mapping software vulnerabilities for cybersecurity agents (CSAIL, ALFA Lab) or checking how well models describe events in satellite imagery (Aero-Astro, STAR Lab). i also care a lot about the <em>safety side</em>, which is why i spent the summer as an AISF Fellow with MIT AI Alignment.</p>
-        <p>i'm the Mentorship Chair for <em>MIT Women in AI</em>, where i work on helping more women and underrepresented students find their place in CS and AI.</p>
-        <p>i'm looking for <em>software engineering, AI/ML, and hardware-adjacent</em> internships for Summer 2027.</p>
-        <p>outside of tech, i like early morning long runs, afternoon tennis on hot sunny days, and a good matcha (or coffee) at an aesthetic cafe. if you can't find me, look for the nearest cafe: i'll probably be there :)</p>
-      </div>
-      <div class="about-photo">
-        <img src="assets/camp-speaking2.jpg" alt="Lindy teaching a session" loading="lazy" decoding="async">
-      </div>
-    </div>
-  </div>
-</section>
-
-<hr class="divider">
-
-<section id="writing">
-  <div class="wrap">
-    <div class="section-head fade">
-      <svg class="sprig" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M12 21V6M12 6c0-2.5 2-4.5 5-4.5-.5 3-2.5 5-5 4.5ZM12 10c0-2.5-2-4-4.5-4C8 8.5 10 10.5 12 10Z"/></svg>
-      <h2>writing</h2>
-    </div>
-    <p class="write-intro fade">a few pieces i've written, inspired by my mother and the places i call home.</p>
-
-    <a class="write-feature fade" href="writing/what-the-ocean-promised.html">
-      <div class="kicker">personal essay · forthcoming in MIT Angles</div>
-      <h3>What the Ocean Promised</h3>
-      <blockquote>A group of aunties crowd a street vendor selling fresh durian, the shrill of their haggling piercing the air. Amidst the chaos of the market, children still wearing their school-issued uniforms shriek and swerve around customers...</blockquote>
-      <p>On my mother's life before I knew her, and the fragments I've managed to gather together </p>
-      <div class="go">read the essay →</div>
-    </a>
-
-    <div class="write-list fade">
-      <a class="write-entry" href="writing/on-leaving-and-finding-home.html">
-        <div class="write-main">
-          <h4>01568: Proof of Life</h4>
-          <p>What does it feel like to grow up in a small town? What does it mean to miss a place you were desperate to escape?</p>
-          <p style="font-style:italic; color:var(--sage-dark); font-size:12.5px; margin-top:4px;">forthcoming in MIT Angles</p>
-        </div>
-        <div class="write-meta">read →</div>
-      </a>
-      <a class="write-entry" href="writing/flash.html">
-        <div class="write-main">
-          <h4>Flash</h4>
-          <p>An ode to adulthood.</p>
-          <p style="font-style:italic; color:var(--sage-dark); font-size:12.5px; margin-top:4px;">published in the Rune Magazine, 2026 edition</p>
-        </div>
-        <div class="write-meta">read →</div>
-      </a>
-    </div>
-  </div>
-</section>
-
-<hr class="divider">
-
-<section id="notes">
-  <div class="wrap">
-    <div class="section-head fade">
-      <svg class="sprig" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M12 21V6M12 6c0-2.5 2-4.5 5-4.5-.5 3-2.5 5-5 4.5ZM12 10c0-2.5-2-4-4.5-4C8 8.5 10 10.5 12 10Z"/></svg>
-      <h2>small notes</h2>
-    </div>
-    <div class="notes fade">
-
-      <div class="note">
-        <figure class="polaroid">
-          <img src="assets/travel-walk.jpg" alt="A quiet tree-lined path">
-          <figcaption>charles river miles</figcaption>
-        </figure>
-        <div>
-          <h4><svg class="doodle" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 20c3-1 4-4 7-4s3 3 6 2 2-6 0-8" stroke-dasharray="2 2.6"/><path d="M16 10V3l4 1.6-4 1.6"/></svg>running</h4>
-          <p>training toward a full marathon (and maybe an Ironman 70.3 soon...)</p>
-          <a class="gentle-link" href="https://www.strava.com/athletes/120327915" target="_blank" rel="noopener">strava, if you're curious</a>
-        </div>
-      </div>
-
-      <div class="note">
-        <figure class="polaroid">
-          <img src="assets/tennis-action.jpg" alt="Lindy playing tennis">
-          <figcaption>always down for doubles</figcaption>
-        </figure>
-        <div>
-          <h4><svg class="doodle" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="9" cy="9" rx="5" ry="6.3" transform="rotate(-40 9 9)"/><path d="M6.5 6.5l5 5M5 9.5l3.5 3.5M9.5 5l3.5 3.5"/><path d="M13 13l6.5 6.5"/><circle cx="19" cy="5.5" r="2"/></svg>tennis</h4>
-          <p>grew up playing competitive USTA tournaments, still compete nationally for the MIT club team, and try to squeeze in a game of doubles whenever i have free time.</p>
-        </div>
-      </div>
-
-      <div class="note">
-        <figure class="polaroid">
-          <img src="assets/travel-alley.jpg" alt="A cafe-lined alley">
-          <figcaption>matcha o'clock</figcaption>
-        </figure>
-        <div>
-          <h4><svg class="doodle" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 10h11v4a5 5 0 0 1-5 5h-1a5 5 0 0 1-5-5z"/><path d="M16 11h1.5a2.5 2.5 0 0 1 0 5H15.5"/><path d="M9 3c-1 1.5 1 2.5 0 4M12.5 3c-1 1.5 1 2.5 0 4"/></svg>cafes</h4>
-          <p>absolute matcha fanatic (and a bit of a coffee addict too). always looking for new cozy cafes to try.</p>
-        </div>
-      </div>
-
-      <div class="note">
-        <figure class="polaroid">
-          <img src="assets/camp-collage.jpg" alt="Camp group photo">
-          <figcaption>MY Camp, Taoyuan</figcaption>
-        </figure>
-        <div>
-          <h4><svg class="doodle" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20l1-4L16 5l3 3L8 19z"/><path d="M14 7l3 3"/><path d="M5 16l3 3"/></svg>teaching</h4>
-          <p>spent two weeks this summer as the lead instructor for an MIT and Yuan Ze University program in Taiwan, teaching machine learning, Python, and English to YZU students and high schoolers.</p>
-        </div>
-      </div>
-
-    </div>
-  </div>
-</section>
-
-<hr class="divider">
-
-<section id="work">
-  <div class="wrap">
-    <div class="section-head fade">
-      <svg class="sprig" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M12 21V6M12 6c0-2.5 2-4.5 5-4.5-.5 3-2.5 5-5 4.5ZM12 10c0-2.5-2-4-4.5-4C8 8.5 10 10.5 12 10Z"/></svg>
-      <h2>work</h2>
-    </div>
-    <div class="work-list fade">
-
-      <div class="work-item">
-        <div class="when">Jun – Aug 2026<br>Taipei, Taiwan</div>
-        <div>
-          <h3>Far Eastern International Bank</h3>
-          <div class="role">Web3 Banking and AI Intern, Corporate Banking Group</div>
-          <ul>
-            <li>Built and debugged a Python pipeline that scores real bank transactions for money laundering risk, then spent a lot of time tuning it so it stopped flagging innocent ones</li>
-            <li>Designed a RAG pipeline to automate risk-review reports that used to be written by hand, with citation grounding and consistency checks so every claim traces back to a source</li>
-            <li>Dug into how Web3 could actually be useful for a bank, from cross-border payments to stablecoins</li>
-          </ul>
-        </div>
-      </div>
-
-      <div class="work-item">
-        <div class="when">Jan – Aug 2026<br>Cambridge, MA</div>
-        <div>
-          <h3>MIT CSAIL, ALFA Lab</h3>
-          <div class="role">Undergraduate Researcher, LLMs for Autonomous Cybersecurity Agents</div>
-          <ul>
-            <li>Built an LLM pipeline that links software vulnerabilities (CVEs) to the weaknesses and attack techniques behind them (CWE and MITRE ATT&amp;CK), treating each link as something to score and rank rather than a yes or no guess, which cut down on false matches</li>
-            <li>Noticed the dataset had roughly three times more links than it should, and traced it back to how the CWE hierarchy was being flattened in our knowledge graph. That finding shaped the lab's pipeline redesign</li>
-          </ul>
-        </div>
-      </div>
-
-      <div class="work-item">
-        <div class="when">Summer 2026<br>Taoyuan, Taiwan</div>
-        <div>
-          <h3>YZU × MIT Collaborative Program</h3>
-          <div class="role">Instructor, MY Camp: Technology, Culture &amp; English</div>
-          <ul>
-            <li>Taught technology and English sessions to a cohort of Taiwanese high schoolers as part of an MIT × Yuan Ze University program</li>
-            <li>Mentored student teams through their final presentations</li>
-          </ul>
-          <div class="work-photos">
-            <img src="assets/opening-ceremony.jpg" alt="Lindy teaching">
-            <img src="assets/camp-award.jpg" alt="Lindy receiving a certificate">
-            <img src="assets/lindy-ivy.jpg" alt="Lindy teaching">
-          </div>
-        </div>
-      </div>
-
-      <div class="work-item">
-        <div class="when">Dec 2025 – Feb 2026<br>Cambridge, MA</div>
-        <div>
-          <h3>MIT STAR Lab</h3>
-          <div class="role">Undergraduate Researcher, Generative AI for Satellite Event Captioning</div>
-          <ul>
-            <li>Helped build one of the first datasets pairing satellite images over time with captions of what happened, cleaning up LLM-written captions against the actual imagery and news coverage</li>
-            <li>Tested how well LLMs describe real-world events when they have to reason about what changed over time</li>
-          </ul>
-        </div>
-      </div>
-
-      <div class="work-item">
-        <div class="when">Jun – Jul 2024<br>Milledgeville, GA</div>
-        <div>
-          <h3>Summer Science Program</h3>
-          <div class="role">Student Researcher</div>
-          <ul>
-            <li>Worked out the orbit of asteroid A910 LC from our own telescope observations using Python and Monte Carlo simulation, and co-authored the results we submitted to the Minor Planet Center</li>
-          </ul>
-        </div>
-      </div>
-
-    </div>
-  </div>
-</section>
-
-<hr class="divider">
-
-<section id="projects">
-  <div class="wrap">
-    <div class="section-head fade">
-      <svg class="sprig" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M12 21V6M12 6c0-2.5 2-4.5 5-4.5-.5 3-2.5 5-5 4.5ZM12 10c0-2.5-2-4-4.5-4C8 8.5 10 10.5 12 10Z"/></svg>
-      <h2>projects</h2>
-    </div>
-    <div class="proj-grid fade">
-
-      <a class="proj-card" href="https://github.com/lindy-zhang/vector-search" target="_blank" rel="noopener">
-        <div class="tag">systems</div>
-        <h3>Vector Search</h3>
-        <p>A small vector search engine I built to understand retrieval: a brute-force k-NN baseline, an IVF index, and filtered search, benchmarked on the tradeoff between recall and latency. I'm building it alongside the approximate nearest neighbor papers I've been reading for my systems research.</p>
-        <div class="stack"><span>Python</span><span>NumPy</span></div>
-        <div class="go">view on github →</div>
-      </a>
-
-      <a class="proj-card" href="https://github.com/lindy-zhang/tiny-gpt" target="_blank" rel="noopener">
-        <div class="tag">gpt</div>
-        <h3>tiny-gpt</h3>
-        <p>A GPT-style Transformer built from scratch as a PyTorch review exercise: implemented attention, causal masking, training loop, and sampling.</p>
-        <div class="stack"><span>Python</span><span>PyTorch</span></div>
-        <div class="go">view on github →</div>
-      </a>
-
-        <a class="proj-card" href="https://github.com/lindy-zhang/write-like-me" target="_blank" rel="noopener">
-        <div class="tag">language models · in progress</div>
-        <h3>write-like-me</h3>
-        <p>Can a tiny language model learn to write like me? I pretrained a small character-level GPT on public-domain essays by Emerson, Lamb, and Montaigne, then fine-tuned it on about 17,000 words of my own writing. Within a few minutes of fine-tuning, it shifted into my voice and subjects, so now I'm measuring where it stops writing like me and starts quoting me. (Work in progress...)</p>
-        <div class="stack"><span>Python</span><span>PyTorch</span><span>NumPy</span></div>
-        <div class="go">view on github →</div>
-      </a>
-
-      <a class="proj-card" href="https://github.com/lindy-zhang/face-recognition-pytorch" target="_blank" rel="noopener">
-        <div class="tag">computer vision</div>
-        <h3>Facial Recognition</h3>
-        <p>An end-to-end face recognition pipeline: MTCNN finds and aligns faces, InceptionResnetV1 turns them into embeddings, and an SVM classifies identities, with a nearest-neighbor distance check to flag faces it hasn't seen before.</p>
-        <div class="stack"><span>PyTorch</span><span>OpenCV</span><span>scikit-learn</span></div>
-        <div class="go">view on github →</div>
-      </a>
-
-    </div>
-
-    <div class="skills-line fade" style="margin-top:44px;">
-      <strong>Languages:</strong> Python, C++, C, Java, HTML &nbsp;·&nbsp;
-      <strong>ML:</strong> PyTorch, TensorFlow, scikit-learn &nbsp;·&nbsp;
-      <strong>Tools:</strong> Git, Azure, AWS &nbsp;·&nbsp;
-      <strong>Spoken:</strong> Mandarin, Spanish, Latin
-    </div>
-  </div>
-</section>
-
-<hr class="divider">
-
-<section id="resume">
-  <div class="wrap">
-    <div class="resume-card fade">
-      <div>
-        <h3>the one-page version</h3>
-        <p>all about me.</p>
-      </div>
-      <div class="cta-row">
-        <a class="cta" href="resume.pdf" target="_blank" rel="noopener">open resume</a>
-        <a class="cta" href="resume.pdf" download>download pdf</a>
-      </div>
-    </div>
-  </div>
-</section>
-
-<footer id="contact">
-  <div class="wrap">
-    <h2>please reach out :)</h2>
-    <div class="foot-links">
-      <a href="mailto:lwzhang@mit.edu">lwzhang@mit.edu</a>
-      <a href="tel:5082440188">(508) 244-0188</a>
+  <!-- ================= INTRO ================= -->
+  <div class="intro">
+    <h1 class="rise">lindy zhang</h1>
+    <p class="rise">hi! i study computer science and math at MIT (6-4 + 18) and do research at CSAIL on nearest neighbor search.</p>
+    <p class="rise">off the clock i'm usually running along the <span class="peek" data-img="assets/travel-walk.jpg">Charles</span>, at a <span class="peek" data-img="assets/travel-alley.jpg">cozy cafe</span> with a matcha, or on a <span class="peek" data-img="assets/tennis-action.jpg">tennis court</span>. i also write <a href="#writing" style="border-bottom:1px solid var(--faint)">essays</a>, mostly about my family and the places i call home.</p>
+    <div class="links rise">
+      <a href="mailto:lwzhang@mit.edu">email</a>
       <a href="https://github.com/lindy-zhang" target="_blank" rel="noopener">github</a>
       <a href="https://www.linkedin.com/in/lindywzhang" target="_blank" rel="noopener">linkedin</a>
+      <a href="resume.pdf" target="_blank" rel="noopener">resume</a>
       <a href="https://www.strava.com/athletes/120327915" target="_blank" rel="noopener">strava</a>
     </div>
-    <div class="foot-bottom">
-      <span>Lindy Zhang, 2026</span>
-      <span>Cambridge, MA / Taipei, TW</span>
-    </div>
   </div>
-</footer>
+
+  <!-- ================= WORK =================
+       To add a job: copy one whole <div class="row">...</div> block,
+       paste it where you want it, and edit the text. -->
+  <section id="work">
+    <div class="label rise">work &amp; research</div>
+
+    <div class="row rise">
+      <button class="row-head" aria-expanded="false"><span class="mark">+</span><span class="t">MIT CSAIL, BASS Group</span><span class="sub">researcher</span><span class="y">2026–</span></button>
+      <div class="row-body"><div><div class="inner">
+        <p class="meta">sep 2026 – now · cambridge</p>
+        <p>researching dynamic approximate nearest neighbor search: how to keep finding close vectors quickly while the data underneath keeps changing. right now i'm benchmarking GPU indexes under streaming workloads (see <em>jasper-streaming-bench</em> under projects).</p>
+      </div></div></div>
+    </div>
+
+    <div class="row rise">
+      <button class="row-head" aria-expanded="false"><span class="mark">+</span><span class="t">Far Eastern International Bank</span><span class="sub">AI intern</span><span class="y">2026</span></button>
+      <div class="row-body"><div><div class="inner">
+        <p class="meta">jun – aug 2026 · <span class="peek" data-img="assets/travel-blossoms.jpg">taipei</span> · web3 banking and AI, corporate banking group</p>
+        <p>built and debugged a Python pipeline that scores real bank transactions for money laundering risk, then spent a lot of time tuning it so it stopped flagging innocent ones.</p>
+        <p>designed a RAG pipeline to automate risk-review reports that used to be written by hand, with citation grounding and consistency checks so every claim traces back to a source. also dug into how Web3 could actually be useful for a bank, from cross-border payments to stablecoins.</p>
+      </div></div></div>
+    </div>
+
+    <div class="row rise">
+      <button class="row-head" aria-expanded="false"><span class="mark">+</span><span class="t">MIT CSAIL, ALFA Lab</span><span class="sub">LLMs for cybersecurity agents</span><span class="y">2026</span></button>
+      <div class="row-body"><div><div class="inner">
+        <p class="meta">jan – aug 2026 · cambridge</p>
+        <p>built an LLM pipeline that links software vulnerabilities (CVEs) to the weaknesses and attack techniques behind them (CWE and MITRE ATT&amp;CK), treating each link as something to score and rank rather than a yes or no guess, which cut down on false matches.</p>
+        <p>noticed the dataset had roughly three times more links than it should, and traced it back to how the CWE hierarchy was being flattened in our knowledge graph. that finding shaped the lab's pipeline redesign.</p>
+      </div></div></div>
+    </div>
+
+    <div class="row rise">
+      <button class="row-head" aria-expanded="false"><span class="mark">+</span><span class="t">YZU × MIT, MY Camp</span><span class="sub">instructor</span><span class="y">2026</span></button>
+      <div class="row-body"><div><div class="inner">
+        <p class="meta">summer 2026 · <span class="peek" data-img="assets/camp-collage.jpg">taoyuan</span></p>
+        <p>lead instructor for two weeks, teaching machine learning, Python, and English to YZU students and high schoolers, and mentoring student teams through their <span class="peek" data-img="assets/camp-speaking.jpg">final presentations</span>.</p>
+      </div></div></div>
+    </div>
+
+    <div class="row rise">
+      <button class="row-head" aria-expanded="false"><span class="mark">+</span><span class="t">MIT STAR Lab</span><span class="sub">satellite event captioning</span><span class="y">2025–26</span></button>
+      <div class="row-body"><div><div class="inner">
+        <p class="meta">dec 2025 – feb 2026 · cambridge</p>
+        <p>helped build one of the first datasets pairing satellite images over time with captions of what happened, cleaning up LLM-written captions against the actual imagery and news coverage, and tested how well LLMs describe events when they have to reason about what changed.</p>
+      </div></div></div>
+    </div>
+
+    <div class="row rise">
+      <button class="row-head" aria-expanded="false"><span class="mark">+</span><span class="t">Summer Science Program</span><span class="sub">asteroid orbit</span><span class="y">2024</span></button>
+      <div class="row-body"><div><div class="inner">
+        <p class="meta">jun – jul 2024 · milledgeville, ga</p>
+        <p>worked out the orbit of asteroid A910 LC from our own telescope observations using Python and Monte Carlo simulation, and co-authored the results we submitted to the Minor Planet Center.</p>
+      </div></div></div>
+    </div>
+
+    <div class="row rise">
+      <button class="row-head" aria-expanded="false"><span class="mark">+</span><span class="t">also</span><span class="sub">AI safety, mentorship</span><span class="y"></span></button>
+      <div class="row-body"><div><div class="inner">
+        <p>AISF Fellow with MIT AI Alignment. Mentorship Chair for MIT Women in AI, helping more women and underrepresented students find their place in CS and AI.</p>
+      </div></div></div>
+    </div>
+  </section>
+
+  <!-- ================= PROJECTS ================= -->
+  <section id="projects">
+    <div class="label rise">projects</div>
+
+    <div class="row rise">
+      <button class="row-head" aria-expanded="false"><span class="mark">+</span><span class="t">jasper-streaming-bench</span><span class="sub">current UROP</span><span class="y">python · gpu</span></button>
+      <div class="row-body"><div><div class="inner">
+        <p class="meta">BASS Group, MIT CSAIL · fall 2026</p>
+        <p>a benchmark harness for running Jasper, a GPU graph index for vector search, under streaming workloads where vectors are constantly being inserted and deleted, including the CANDOR-Bench datasets and runbooks. it tracks insert throughput, search speed, recall over time, and GPU utilization and memory, to answer questions like how batch size and insert/delete patterns change performance, and whether small batches leave the GPU sitting idle.</p>
+        <p>it also has a CPU mock of Jasper so the harness's bookkeeping can be tested without a GPU, and dataset "fingerprints" (intrinsic dimensionality, hubness, how clustered the data is) that try to predict which datasets will be hard for graph indexes.</p>
+        <p><a href="https://github.com/lindy-zhang/jasper-streaming-bench" target="_blank" rel="noopener">github ↗</a></p>
+      </div></div></div>
+    </div>
+
+    <div class="row rise">
+      <button class="row-head" aria-expanded="false"><span class="mark">+</span><span class="t">vector-search</span><span class="sub">k-NN, IVF, filtered search</span><span class="y">python</span></button>
+      <div class="row-body"><div><div class="inner">
+        <p>a small vector search engine i built to understand retrieval: a brute-force k-NN baseline, an IVF index, and filtered search, benchmarked on the tradeoff between recall and latency. i'm building it alongside the nearest neighbor papers i've been reading for my research.</p>
+        <p><a href="https://github.com/lindy-zhang/vector-search" target="_blank" rel="noopener">github ↗</a></p>
+      </div></div></div>
+    </div>
+
+    <div class="row rise">
+      <button class="row-head" aria-expanded="false"><span class="mark">+</span><span class="t">write-like-me</span><span class="sub">in progress</span><span class="y">pytorch</span></button>
+      <div class="row-body"><div><div class="inner">
+        <p>can a tiny language model learn to write like me? i pretrained a small character-level GPT on public-domain essays by Emerson, Lamb, and Montaigne, then fine-tuned it on about 17,000 words of my own writing. within a few minutes of fine-tuning it shifted into my voice and subjects, so now i'm measuring where it stops writing like me and starts quoting me.</p>
+        <p><a href="https://github.com/lindy-zhang/write-like-me" target="_blank" rel="noopener">github ↗</a></p>
+      </div></div></div>
+    </div>
+
+    <div class="row rise">
+      <button class="row-head" aria-expanded="false"><span class="mark">+</span><span class="t">tiny-gpt</span><span class="sub">a transformer from scratch</span><span class="y">pytorch</span></button>
+      <div class="row-body"><div><div class="inner">
+        <p>a GPT-style Transformer built from scratch as a PyTorch review exercise: attention, causal masking, the training loop, and sampling.</p>
+        <p><a href="https://github.com/lindy-zhang/tiny-gpt" target="_blank" rel="noopener">github ↗</a></p>
+      </div></div></div>
+    </div>
+
+    <div class="row rise">
+      <button class="row-head" aria-expanded="false"><span class="mark">+</span><span class="t">face recognition</span><span class="sub">MTCNN + embeddings + SVM</span><span class="y">pytorch</span></button>
+      <div class="row-body"><div><div class="inner">
+        <p>an end-to-end pipeline: MTCNN finds and aligns faces, InceptionResnetV1 turns them into embeddings, and an SVM classifies identities, with a nearest-neighbor distance check to flag faces it hasn't seen before.</p>
+        <p><a href="https://github.com/lindy-zhang/face-recognition-pytorch" target="_blank" rel="noopener">github ↗</a></p>
+      </div></div></div>
+    </div>
+
+    <p class="skills rise">Python, C++, C, Java · PyTorch, TensorFlow, scikit-learn · Git, Azure, AWS · Mandarin, Spanish, Latin</p>
+  </section>
+
+  <!-- ================= WRITING =================
+       Writing rows are plain links: <a class="row-head" href="...">  -->
+  <section id="writing">
+    <div class="label rise">writing</div>
+
+    <div class="row rise">
+      <a class="row-head" href="writing/what-the-ocean-promised.html"><span class="mark">↗</span><span class="t"><em>What the Ocean Promised</em></span><span class="sub">MIT Angles, forthcoming</span><span class="y">essay</span></a>
+    </div>
+    <div class="row rise">
+      <a class="row-head" href="writing/on-leaving-and-finding-home.html"><span class="mark">↗</span><span class="t"><em>01568: Proof of Life</em></span><span class="sub">MIT Angles, forthcoming</span><span class="y">essay</span></a>
+    </div>
+    <div class="row rise">
+      <a class="row-head" href="writing/flash.html"><span class="mark">↗</span><span class="t"><em>Flash</em></span><span class="sub">The Rune, 2026</span><span class="y">poem</span></a>
+    </div>
+  </section>
+
+  <footer class="rise">lindy zhang, 2026 · cambridge</footer>
+</main>
+
+<!-- ================= MUSIC =================
+     The song list lives in the script at the bottom (search for SONGS). -->
+<div class="music" id="music">
+  <div class="m-row">
+    <button class="m-play" aria-label="play">
+      <svg class="play" viewBox="0 0 16 16" fill="currentColor"><path d="M4.5 2.5v11l9-5.5z"/></svg>
+      <svg class="pause" viewBox="0 0 16 16" fill="currentColor"><path d="M4 2.5h3v11H4zM9.5 2.5h3v11h-3z"/></svg>
+    </button>
+    <div class="m-text">
+      <span class="m-label">on repeat</span>
+      <span class="m-title"></span>
+      <span class="m-artist"></span>
+    </div>
+    <span class="m-eq" aria-hidden="true"><i></i><i></i><i></i></span>
+    <button class="m-skip" id="mprev" aria-label="previous song">‹</button>
+    <button class="m-skip" id="mnext" aria-label="next song">›</button>
+  </div>
+  <div class="m-embed"><div><div class="frame"><div id="spotify"></div></div></div></div>
+</div>
+
+<div class="corner l" id="caption">the sky over the charles, as it is in cambridge right now. click anywhere to add a star.</div>
+<div class="corner r">
+  <button id="pause">pause time</button>
+  <span id="clock">cambridge</span>
+</div>
 
 <script>
-  const io = new IntersectionObserver((entries)=>{
-    entries.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } });
-  }, {threshold:0.12});
-  document.querySelectorAll('.fade').forEach(el=>io.observe(el));
-</script>
+/* ============================================================
+   1. ENTRANCE + ROWS + PHOTO PEEKS
+   ============================================================ */
+(() => {
+  // lines rise in one after another
+  const rise = [...document.querySelectorAll('.rise')];
+  const io = new IntersectionObserver(es => es.forEach(e => {
+    if (e.isIntersecting){
+      const i = rise.indexOf(e.target);
+      e.target.style.transitionDelay = (Math.min(i, 12) * 55) + 'ms';
+      e.target.classList.add('in');
+      e.target.querySelectorAll('.label').forEach(l => l.classList.add('in'));
+      if (e.target.classList.contains('label')) e.target.classList.add('in');
+      io.unobserve(e.target);
+    }
+  }), {threshold:.1});
+  rise.forEach(el => io.observe(el));
 
+  // click a row to open it
+  document.querySelectorAll('button.row-head').forEach(b => {
+    b.addEventListener('click', () => {
+      const row = b.closest('.row');
+      const open = row.classList.toggle('open');
+      b.setAttribute('aria-expanded', open);
+    });
+  });
+
+  // photos that float next to the cursor
+  const box = document.getElementById('photo'), img = box.querySelector('img');
+  let tx = 0, ty = 0, x = 0, y = 0, rot = 0, active = false, raf = null;
+  const touch = matchMedia('(hover: none)').matches;
+  // preload so the first hover is instant
+  document.querySelectorAll('.peek').forEach(p => { const i = new Image(); i.src = p.dataset.img; });
+
+  function loop(){
+    x += (tx - x) * .16; y += (ty - y) * .16;
+    const vx = (tx - x);
+    rot += ((Math.max(-8, Math.min(8, vx * .12))) - rot) * .12;
+    box.style.transform = `translate3d(${x}px,${y}px,0) rotate(${rot}deg)`;
+    if (active || Math.abs(tx - x) > .5) raf = requestAnimationFrame(loop); else raf = null;
+  }
+  function place(e){
+    const w = 190, h = w * (img.naturalHeight / img.naturalWidth || .75);
+    tx = Math.min(innerWidth - w - 16, e.clientX + 22);
+    ty = Math.max(16, Math.min(innerHeight - h - 16, e.clientY - h * .5));
+  }
+  document.querySelectorAll('.peek').forEach(p => {
+    const show = e => {
+      img.src = p.dataset.img; place(e);
+      if (!active){ x = tx; y = ty + 12; }
+      active = true; box.classList.add('show');
+      if (!raf) raf = requestAnimationFrame(loop);
+    };
+    const hide = () => { active = false; box.classList.remove('show'); };
+    if (touch){
+      p.addEventListener('click', e => {
+        e.stopPropagation();
+        if (box.classList.contains('show') && img.src.endsWith(p.dataset.img)) return hide();
+        show(e); clearTimeout(p._t); p._t = setTimeout(hide, 2600);
+      });
+    } else {
+      p.addEventListener('pointerenter', show);
+      p.addEventListener('pointermove', place);
+      p.addEventListener('pointerleave', hide);
+    }
+  });
+})();
+
+/* ============================================================
+   2. THE SKY
+   Colors follow the real sunrise and sunset in Cambridge.
+   Stars twinkle and drift, the river reflects them, and at
+   night a shooting star goes by now and then.
+   Add ?t=18.5 to the URL to preview a time of day (in hours).
+   ============================================================ */
+(() => {
+  const cv = document.getElementById('sky'), ctx = cv.getContext('2d');
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const params = new URLSearchParams(location.search);
+  const forced = params.has('t') ? parseFloat(params.get('t')) : null;
+  let W, H, DPR, horizon, paused = false;
+
+  /* ---------- time in Cambridge ---------- */
+  function bostonNow(){
+    const d = new Date();
+    const parts = Object.fromEntries(new Intl.DateTimeFormat('en-US', {
+      timeZone:'America/New_York', hour:'numeric', minute:'numeric', second:'numeric', hour12:false,
+      year:'numeric', month:'numeric', day:'numeric'
+    }).formatToParts(d).map(p => [p.type, p.value]));
+    const h = (+parts.hour % 24) + parts.minute / 60 + parts.second / 3600;
+    const utcH = d.getUTCHours() + d.getUTCMinutes() / 60 + d.getUTCSeconds() / 3600;
+    let off = h - utcH; if (off > 12) off -= 24; if (off < -12) off += 24;
+    const doy = Math.round((Date.UTC(+parts.year, parts.month - 1, +parts.day) - Date.UTC(+parts.year, 0, 0)) / 864e5);
+    return {h, off, doy};
+  }
+  // NOAA approximation for sunrise / sunset in Boston
+  function sun(doy, off){
+    const lat = 42.36 * Math.PI / 180, lon = -71.06;
+    const g = 2 * Math.PI / 365 * (doy - 1);
+    const eqt = 229.18 * (0.000075 + 0.001868*Math.cos(g) - 0.032077*Math.sin(g) - 0.014615*Math.cos(2*g) - 0.040849*Math.sin(2*g));
+    const dec = 0.006918 - 0.399912*Math.cos(g) + 0.070257*Math.sin(g) - 0.006758*Math.cos(2*g) + 0.000907*Math.sin(2*g) - 0.002697*Math.cos(3*g) + 0.00148*Math.sin(3*g);
+    const ha = Math.acos(Math.cos(90.833*Math.PI/180) / (Math.cos(lat)*Math.cos(dec)) - Math.tan(lat)*Math.tan(dec)) * 180 / Math.PI;
+    const noon = (720 - 4*lon - eqt) / 60 + off;
+    return {rise: noon - ha*4/60, set: noon + ha*4/60, noon};
+  }
+
+  /* ---------- palette ---------- */
+  const hex = s => [1,3,5].map(i => parseInt(s.slice(i, i+2), 16));
+  const P = {
+    night:   ['#070c1a', '#141c33'],
+    predawn: ['#141b36', '#3b3456'],
+    dawn:    ['#4b5a8c', '#e7a891'],
+    morning: ['#9db8d6', '#f1d9c2'],
+    day:     ['#b3cde3', '#eef0e8'],
+    late:    ['#a9bdd4', '#f0dcc1'],
+    golden:  ['#7488ad', '#f2a46f'],
+    dusk:    ['#2c3762', '#b86e78'],
+    blue:    ['#121a35', '#2f3157'],
+  };
+  function skyAt(h, s){
+    const k = [
+      [s.rise - 1.6, P.night], [s.rise - .7, P.predawn], [s.rise + .05, P.dawn], [s.rise + 1.1, P.morning],
+      [s.noon, P.day], [s.set - 1.6, P.late], [s.set - .25, P.golden], [s.set + .45, P.dusk],
+      [s.set + 1.2, P.blue], [s.set + 2.2, P.night]
+    ];
+    if (h < k[0][0]) h += 24;
+    const ext = [...k, [k[0][0] + 24, k[0][1]]];
+    for (let i = 0; i < ext.length - 1; i++){
+      const [a, ca] = ext[i], [b, cb] = ext[i+1];
+      if (h >= a && h <= b){
+        let t = (h - a) / (b - a); t = t*t*(3 - 2*t);
+        return [0,1].map(j => { const A = hex(ca[j]), B = hex(cb[j]); return A.map((v, n) => Math.round(v + (B[n] - v) * t)); });
+      }
+    }
+    return [hex(P.night[0]), hex(P.night[1])];
+  }
+  const lum = c => (0.2126*c[0] + 0.7152*c[1] + 0.0722*c[2]) / 255;
+  const rgb = (c, a = 1) => `rgba(${c[0]},${c[1]},${c[2]},${a})`;
+  const mix = (a, b, t) => a.map((v, i) => Math.round(v + (b[i] - v) * t));
+
+  /* ---------- stars ---------- */
+  let stars = [], ripples = [], meteor = null, nextMeteor = 4000;
+  const rand = (a, b) => a + Math.random() * (b - a);
+  const newStar = (x, y, born) => ({x, y, vx: rand(-.04, .04), r: rand(.5, 1.5), tw: rand(0, 6.28), sp: rand(.8, 1.6), born});
+  function resize(){
+    DPR = Math.min(2, devicePixelRatio || 1);
+    W = innerWidth; H = innerHeight;
+    cv.width = W * DPR; cv.height = H * DPR;
+    ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+    horizon = H * (W < 760 ? .84 : .79);
+    const n = Math.round(Math.min(240, Math.max(80, W * horizon / 6000)));
+    stars = stars.filter(p => p.y < horizon);
+    while (stars.length < n){
+      // more stars high up, fewer near the glow of the horizon
+      const y = horizon * Math.pow(Math.random(), 1.4);
+      stars.push(newStar(rand(0, W), Math.max(8, y - 12), -1e9));
+    }
+  }
+  addEventListener('resize', resize);
+  resize();
+
+  // click the open sky to add a star
+  addEventListener('pointerdown', e => {
+    if (e.target.closest('a, button, .peek, .corner, .music')) return;
+    if (e.clientY > horizon) return;
+    const now = performance.now();
+    const s = newStar(e.clientX, e.clientY, now); s.r = 1.6;
+    stars.push(s);
+    ripples.push({x: e.clientX, y: e.clientY, t: now});
+    if (stars.length > 320) stars.shift();
+  });
+
+  // the caption fades once you start scrolling
+  const caption = document.getElementById('caption');
+  addEventListener('scroll', () => caption.classList.toggle('hide', scrollY > 120), {passive:true});
+
+  const pauseBtn = document.getElementById('pause');
+  pauseBtn.onclick = () => { paused = !paused; pauseBtn.textContent = paused ? 'resume time' : 'pause time'; if (!paused){ lastFrame = performance.now(); requestAnimationFrame(frame); } };
+  const clock = document.getElementById('clock');
+  const meta = document.querySelector('meta[name=theme-color]');
+
+  /* ---------- draw ---------- */
+  let inkNow = null, simT = 0, lastFrame = performance.now();
+  function frame(now){
+    if (paused) return;
+    const dt = Math.min(50, now - lastFrame); lastFrame = now; simT += dt;
+
+    const b = bostonNow();
+    const s = sun(b.doy, b.off);
+    const h = forced !== null ? forced : b.h;
+    const [top, bot] = skyAt(h, s);
+    const L = lum(mix(top, bot, .45));
+    const dark = L < .5;
+    const ink = dark ? [240, 236, 226] : [28, 30, 38];
+    const inkStr = ink.join(', ');
+    if (inkStr !== inkNow){ document.documentElement.style.setProperty('--ink', inkStr); inkNow = inkStr; meta.content = rgb(top); }
+    // 0 in daylight, 1 at full night
+    const night = Math.max(0, Math.min(1, (.42 - L) / .3));
+
+    // sky
+    const g = ctx.createLinearGradient(0, 0, 0, horizon);
+    g.addColorStop(0, rgb(top)); g.addColorStop(1, rgb(bot));
+    ctx.fillStyle = g; ctx.fillRect(0, 0, W, horizon + 1);
+
+    // the river: a darker band with a soft line of light at the horizon
+    const wtop = mix(bot, top, .35).map(v => v * (dark ? .62 : .8));
+    const wbot = top.map(v => v * (dark ? .45 : .62));
+    const wg = ctx.createLinearGradient(0, horizon, 0, H);
+    wg.addColorStop(0, rgb(wtop)); wg.addColorStop(1, rgb(wbot));
+    ctx.fillStyle = wg; ctx.fillRect(0, horizon, W, H - horizon);
+    ctx.fillStyle = rgb(mix(bot, [255, 240, 220], .3), .35);
+    ctx.fillRect(0, horizon - .5, W, 1);
+
+    // shimmer on the water
+    ctx.strokeStyle = rgb(mix(bot, [255, 255, 255], .25), dark ? .16 : .22); ctx.lineWidth = 1;
+    for (let i = 0; i < 46; i++){
+      const yy = horizon + 6 + ((i * 37) % (H - horizon - 6));
+      const depth = (yy - horizon) / (H - horizon);
+      const speed = (.006 + depth * .012) * (i % 2 ? 1 : -.6);
+      const x0 = ((i * 211 + simT * speed * (reduce ? 0 : 1)) % (W + 200) + W + 200) % (W + 200) - 100;
+      const len = 14 + depth * 60 + (i % 5) * 8;
+      ctx.globalAlpha = .4 + .6 * Math.sin(simT * .0012 + i);
+      ctx.beginPath(); ctx.moveTo(x0, yy); ctx.lineTo(x0 + len, yy); ctx.stroke();
+    }
+    ctx.globalAlpha = 1;
+
+    // stars and their reflections; by day they fade to faint specks
+    const starC = dark ? [255, 250, 240] : [40, 44, 58];
+    for (const p of stars){
+      if (!reduce){ p.x += p.vx * dt * .05; if (p.x < -10) p.x = W + 10; if (p.x > W + 10) p.x = -10; }
+      const fade = Math.min(1, (now - p.born) / 900);
+      const tw = reduce ? 1 : .55 + .45 * Math.sin(simT * .0015 * p.sp + p.tw);
+      // stars come out as it gets dark and are hidden in daylight
+      let a = (dark ? (.12 + .83 * night) * (.35 + .65 * tw) : 0) * fade;
+      // stars you add by clicking stay visible even in daylight
+      if (p.born > 0) a = Math.max(a, .6 * fade);
+      if (a < .01) continue;
+      ctx.fillStyle = rgb(starC, a);
+      ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, 6.283); ctx.fill();
+      if (dark && p.r > 1.3 && night > .6){
+        ctx.fillStyle = rgb(starC, a * .12);
+        ctx.beginPath(); ctx.arc(p.x, p.y, p.r * 4, 0, 6.283); ctx.fill();
+      }
+      const ry = horizon + (horizon - p.y) * .32;
+      if (ry < H){
+        const wob = reduce ? 0 : Math.sin(simT * .002 + p.y * .1) * 2;
+        ctx.fillStyle = rgb(starC, a * .22);
+        ctx.fillRect(p.x - p.r * 1.6 + wob, ry, p.r * 3.2, .8);
+      }
+    }
+
+    // a shooting star every so often, only when it's properly dark
+    if (!reduce && night > .7){
+      nextMeteor -= dt;
+      if (!meteor && nextMeteor < 0){
+        const fromLeft = Math.random() < .5;
+        meteor = {x: fromLeft ? rand(W * .35, W * .6) : rand(W * .6, W * .95), y: rand(20, horizon * .35),
+                  dx: fromLeft ? 1 : -1, t: 0, life: rand(700, 1100)};
+        nextMeteor = rand(9000, 22000);
+      }
+      if (meteor){
+        meteor.t += dt;
+        const k = meteor.t / meteor.life, len = 120;
+        const hx = meteor.x + meteor.dx * k * 320, hy = meteor.y + k * 130;
+        const tg = ctx.createLinearGradient(hx, hy, hx - meteor.dx * len, hy - len * .4);
+        const al = Math.sin(Math.PI * Math.min(1, k)) * .85;
+        tg.addColorStop(0, rgb(starC, al)); tg.addColorStop(1, rgb(starC, 0));
+        ctx.strokeStyle = tg; ctx.lineWidth = 1.2;
+        ctx.beginPath(); ctx.moveTo(hx, hy); ctx.lineTo(hx - meteor.dx * len, hy - len * .4); ctx.stroke();
+        if (k >= 1) meteor = null;
+      }
+    }
+
+    // soft rings where someone added a star
+    ripples = ripples.filter(r => now - r.t < 1200);
+    for (const r of ripples){
+      const t = (now - r.t) / 1200;
+      ctx.strokeStyle = rgb(ink, .45 * (1 - t)); ctx.lineWidth = 1;
+      ctx.beginPath(); ctx.arc(r.x, r.y, 3 + t * 30, 0, 6.283); ctx.stroke();
+    }
+
+    // clock
+    const H12 = Math.floor(h) % 12 || 12, M = String(Math.floor((h % 1) * 60)).padStart(2, '0');
+    clock.textContent = `cambridge ${H12}:${M} ${Math.floor(h) % 24 < 12 ? 'am' : 'pm'}`;
+
+    if (!reduce) requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+  if (reduce){ addEventListener('resize', () => requestAnimationFrame(frame)); setInterval(() => requestAnimationFrame(frame), 60000); }
+})();
+
+/* ============================================================
+   3. MUSIC
+   Songs play through Spotify's official embed. To change the list,
+   copy a song's link in Spotify (Share > Copy Song Link) and paste
+   the part after /track/ as its id.
+   ============================================================ */
+(() => {
+  const SONGS = [
+    {title:'The Night We Met',  artist:'Lord Huron, Phoebe Bridgers', id:'5w6AIoPmHgKkaHXMZ7JThA'},
+    {title:'Bags',              artist:'Clairo',                      id:'1wicceeNVtcnym2YjiOmyj'},
+    {title:'No One Noticed',    artist:'The Marías',                  id:'40QmyP1PmvFYjs8CzYsXA7'},
+    {title:'Show Me How',       artist:'Men I Trust',                 id:'01TyFEZu6mHbffsVfxgrFn'},
+    {title:'Ends of the Earth', artist:'Lord Huron',                  id:'4yyg2J2uXOjCtCyT64984C'},
+    {title:'Kingston',          artist:'Faye Webster',                id:'5WbfFTuIldjL9x7W6y5l7R'},
+    {title:'Hush',              artist:'The Marías',                  id:'04kybb0HCt1uaTBgYkSgwQ'},
+  ];
+  const box = document.getElementById('music');
+  const text = box.querySelector('.m-text');
+  const tEl = box.querySelector('.m-title'), aEl = box.querySelector('.m-artist');
+  const playBtn = box.querySelector('.m-play');
+  let i = Math.floor(Math.random() * SONGS.length);
+  let controller = null, wantPlay = false;
+
+  function show(){
+    text.classList.add('swap');
+    setTimeout(() => { tEl.textContent = SONGS[i].title; aEl.textContent = SONGS[i].artist; text.classList.remove('swap'); }, 180);
+  }
+  tEl.textContent = SONGS[i].title; aEl.textContent = SONGS[i].artist;
+  requestAnimationFrame(() => box.classList.add('ready'));
+
+  const uri = () => 'spotify:track:' + SONGS[i].id;
+  function go(step){
+    i = (i + step + SONGS.length) % SONGS.length; show();
+    if (controller){ controller.loadUri(uri()); if (box.classList.contains('open')) { wantPlay = true; controller.play(); } }
+  }
+  document.getElementById('mprev').onclick = () => go(-1);
+  document.getElementById('mnext').onclick = () => go(1);
+
+  playBtn.addEventListener('click', () => {
+    // if Spotify's player could not load, just open the song on Spotify
+    if (!controller){ window.open('https://open.spotify.com/track/' + SONGS[i].id, '_blank', 'noopener'); return; }
+    if (!box.classList.contains('open')){ box.classList.add('open'); wantPlay = true; controller.play(); return; }
+    controller.togglePlay();
+  });
+
+  // load Spotify's embed API
+  window.onSpotifyIframeApiReady = api => {
+    api.createController(document.getElementById('spotify'), {uri: uri(), width: '100%', height: 80}, c => {
+      controller = c;
+      c.addListener('playback_update', e => {
+        const playing = !e.data.isPaused && !e.data.isBuffering;
+        box.classList.toggle('playing', playing);
+        playBtn.setAttribute('aria-label', playing ? 'pause' : 'play');
+        // when a song ends, move on to the next one
+        if (e.data.duration && e.data.position >= e.data.duration - 300 && e.data.isPaused && wantPlay){ go(1); }
+      });
+    });
+  };
+  const sc = document.createElement('script');
+  sc.src = 'https://open.spotify.com/embed/iframe-api/v1'; sc.async = true;
+  document.body.appendChild(sc);
+})();
+</script>
 </body>
 </html>

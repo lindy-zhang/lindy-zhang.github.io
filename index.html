@@ -114,6 +114,8 @@
     transition:transform .35s var(--ease), color .25s; transform-origin:50% 55%;
   }
   .row-head:hover .t, .row.open .row-head .t{transform:translateX(3px);}
+  .row-head.static{cursor:default;}
+  .row-head.static:hover .t{transform:none;}
   .row-head:hover .mark{color:var(--text);}
   .row.open .mark{transform:rotate(45deg);}
   a.row-head:hover .mark{transform:translate(2px,-2px);}
@@ -176,7 +178,6 @@
   .m-play svg{width:11px; height:11px;}
   .music.playing .m-play svg.play, .music:not(.playing) .m-play svg.pause{display:none;}
   .m-text{display:flex; flex-direction:column; min-width:0; flex:1; font-size:13px; line-height:1.25;}
-  .m-label{font-family:var(--mono); font-size:9.5px; letter-spacing:.04em; color:var(--muted); margin-bottom:2px;}
   .m-title{color:var(--text); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; transition:opacity .3s;}
   .m-artist{color:var(--muted); font-style:italic; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; transition:opacity .3s;}
   .m-text.swap .m-title, .m-text.swap .m-artist{opacity:0;}
@@ -250,10 +251,19 @@
     <div class="label rise">work &amp; research</div>
 
     <div class="row rise">
+      <div class="row-head static"><span class="mark">·</span><span class="t">Microsoft</span><span class="sub">incoming SWE intern, security &amp; identity</span><span class="y">2027</span></div>
+    </div>
+
+    <div class="row rise">
+      <div class="row-head static"><span class="mark">·</span><span class="t">Jane Street</span><span class="sub">INSIGHT, software engineering</span><span class="y">jan 2027</span></div>
+    </div>
+
+    <div class="row rise">
       <button class="row-head" aria-expanded="false"><span class="mark">+</span><span class="t">MIT CSAIL, BASS Group</span><span class="sub">researcher</span><span class="y">2026–</span></button>
       <div class="row-body"><div><div class="inner">
         <p class="meta">sep 2026 – now · cambridge</p>
-        <p>researching dynamic approximate nearest neighbor search: how to keep finding close vectors quickly while the data underneath keeps changing. right now i'm benchmarking GPU indexes under streaming workloads (see <em>jasper-streaming-bench</em> under projects).</p>
+        <p>researching dynamic approximate nearest neighbor search. i'm working on FastDANN, an SSD-resident graph index that absorbs continuous inserts and deletes without full scans or merge latency spikes, and benchmarking the Jasper GPU index on streaming workloads (see <em>jasper-streaming-bench</em> under projects).</p>
+        <p>i also built a Python simulation of Terminus early termination on a streaming Vamana graph, which showed that a fixed stopping threshold loses much of its recall as the index grows.</p>
       </div></div></div>
     </div>
 
@@ -296,6 +306,14 @@
       <div class="row-body"><div><div class="inner">
         <p class="meta">jun – jul 2024 · milledgeville, ga</p>
         <p>worked out the orbit of asteroid A910 LC from our own telescope observations using Python and Monte Carlo simulation, and co-authored the results we submitted to the Minor Planet Center.</p>
+      </div></div></div>
+    </div>
+
+    <div class="row rise">
+      <button class="row-head" aria-expanded="false"><span class="mark">+</span><span class="t">MIT Undergraduate Math Association</span><span class="sub">DEI committee lead</span><span class="y">2025–</span></button>
+      <div class="row-body"><div><div class="inner">
+        <p class="meta">sep 2025 – now · cambridge</p>
+        <p>organizing department initiatives and faculty luncheons to make the math community more inclusive and to bridge students and the Math Department administration. i also run the UMA Mentorship Program, pairing upperclassmen with students in introductory proof-based courses.</p>
       </div></div></div>
     </div>
 
@@ -353,7 +371,7 @@
       </div></div></div>
     </div>
 
-    <p class="skills rise">Python, C++, C, Java · PyTorch, TensorFlow, scikit-learn · Git, Azure, AWS · Mandarin, Spanish, Latin</p>
+    <p class="skills rise">Python, C++, C, Java, HTML · PyTorch, TensorFlow, scikit-learn · Git, Azure, AWS · Mandarin, Spanish, Latin</p>
   </section>
 
   <!-- ================= WRITING =================
@@ -384,7 +402,6 @@
       <svg class="pause" viewBox="0 0 16 16" fill="currentColor"><path d="M4 2.5h3v11H4zM9.5 2.5h3v11h-3z"/></svg>
     </button>
     <div class="m-text">
-      <span class="m-label">on repeat</span>
       <span class="m-title"></span>
       <span class="m-artist"></span>
     </div>
@@ -395,7 +412,7 @@
   <div class="m-embed"><div><div class="frame"><div id="spotify"></div></div></div></div>
 </div>
 
-<div class="corner l" id="caption">the sky over the charles, as it is in cambridge right now. click anywhere to add a star.</div>
+<div class="corner l" id="caption">the sky over the charles river. click anywhere to add a star</div>
 <div class="corner r">
   <button id="pause">pause time</button>
   <span id="clock">cambridge</span>

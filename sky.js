@@ -9,6 +9,7 @@
    - sailboats drift on the water during the day
    - stars twinkle at night, with the odd shooting star
    - click the sky to add a star
+   - the browser tab icon shows the same sky
 
    Add ?t=18.5 to the URL to preview a time of day (in hours).
    ============================================================ */
@@ -206,6 +207,24 @@
     ctx.stroke();
   }
 
+
+  /* ---------- the tab icon follows the sky too ---------- */
+  const favLink = document.querySelector('link[rel=icon]');
+  let lastFav = -1e9;
+  const toHex = c => '#' + c.map(v => Math.round(v).toString(16).padStart(2, '0')).join('');
+  function updateFavicon(top, bot, dark, sunUp){
+    if (!favLink) return;
+    const mid = mix(top, bot, .45);
+    const water = toHex(top.map(v => v * (dark ? .55 : .7)));
+    const city = toHex(dark ? top.map(v => v * .6) : mix(mid, [70, 82, 104], .5));
+    const orb = sunUp
+      ? '<circle cx="42" cy="21" r="12" fill="#fff4d6" opacity=".35"/><circle cx="42" cy="21" r="7.5" fill="#fff6e0"/>'
+      : '<mask id="c"><circle cx="42" cy="20" r="9.5" fill="#fff"/><circle cx="47" cy="16" r="8.5" fill="#000"/></mask><circle cx="42" cy="20" r="9.5" fill="#f6f1e2" mask="url(#c)"/>';
+    const starsSvg = dark ? '<circle cx="17" cy="15" r="1.7" fill="#f6f1e2"/><circle cx="25" cy="26" r="1.1" fill="#f6f1e2" opacity=".7"/>' : '';
+    const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><defs><linearGradient id="g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${toHex(top)}"/><stop offset="1" stop-color="${toHex(bot)}"/></linearGradient><clipPath id="r"><rect width="64" height="64" rx="14"/></clipPath></defs><g clip-path="url(#r)"><rect width="64" height="50" fill="url(#g)"/><rect y="50" width="64" height="14" fill="${water}"/>${orb}${starsSvg}<path fill="${city}" d="M0 50V45H6V42H11V46H15V40H19V45H24V41H29V33H30V28H31V33H33V41H37V30H42V43H47V38H52V44H57V41H64V50Z"/><rect x="38" y="54" width="8" height="1.3" rx=".65" fill="#f6f1e2" opacity=".55"/></g></svg>`;
+    favLink.href = 'data:image/svg+xml,' + encodeURIComponent(svg);
+  }
+
   /* ---------- draw ---------- */
   let inkNow = null, simT = 0, lastFrame = performance.now();
   function frame(now){
@@ -245,6 +264,8 @@
       ctx.fillStyle = rgb(mix(sc, [255, 255, 255], .35), .95);
       ctx.beginPath(); ctx.arc(sunPos.x, sunPos.y, 13 + low * 3, 0, 6.283); ctx.fill();
     }
+
+    if (now - lastFav > 60000){ lastFav = now; updateFavicon(top, bot, dark, sp > 0 && sp < 1); }
 
     // the moon: rises about 50 minutes later each day, so its place depends on the phase
     const phase = moonPhase();
